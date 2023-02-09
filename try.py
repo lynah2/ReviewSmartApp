@@ -7,13 +7,18 @@ import datetime
 
 BACKGROUND_COLOR = "#B1DDC6"
 
-to_learn = {}
-current_card = {}
-
 try: # try running this line of code
     data = pd.read_csv("frToEng.csv")
 except FileNotFoundError:
     data = pd.read_csv("frToEng.csv") 
+
+if 'lastRevised' not in data.columns:
+    data['lastRevised'] = 0
+if 'learned' not in data.columns:
+    data['learned'] = 0
+if 'nextTime' not in data.columns:
+    data['nextTime'] = 0
+
 
 # Define a function to check if a word is comprehensible
 def is_comprehensible(word_f, word_e):
@@ -24,6 +29,8 @@ def is_comprehensible(word_f, word_e):
 # Filter out the words that are not comprehensible
 data = data[data.apply(lambda x: is_comprehensible(x['French'], x['English']), axis=1)]
 data.to_csv("frToEng.csv", index=False)
+
+
 
 now = datetime.datetime.now().strftime("%Y-%m-%d")
 
@@ -68,13 +75,18 @@ def flip_card():
 def is_known():
 
     global to_learn
+    
     to_learn = to_learn[to_learn.index != current_card.index[0]]
+    print(type(to_learn))
     # Load the CSV file into a DataFrame
     data = pd.read_csv("frToEng.csv")
     # Update the relevant row
     data.loc[data['French'] == current_card['French'], 'learned'] = 'y'
 
     data.loc[data['French'] == current_card['French'], 'nextTime'] = datetime.datetime.now() + datetime.timedelta(days=1)
+
+
+
     # Write the DataFrame back to the file
     data.to_csv("frToEng.csv", index=False)
     next_card()
