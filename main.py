@@ -28,10 +28,18 @@ def is_comprehensible(word_f, word_e):
 data = data[data.apply(lambda x: is_comprehensible(x['French'], x['English']), axis=1)]
 data.to_csv("frToEng.csv", index=False)
 
+if 'lastRevised' not in data.columns:
+    data['lastRevised'] = 0
+if 'learned' not in data.columns:
+    data['learned'] = 'n'
+if 'nextTime' not in data.columns:
+    data['nextTime'] = 0
 to_learn = data.to_dict(orient="records")
 now = datetime.datetime.now().strftime("%Y-%m-%d")
 
-#Today = {k: v for k, v in to_learn.items() if }
+Today = [d for d in to_learn if d['nextTime'] == now]
+
+print(Today)
 
 
 #------------------------ Generating a English word ----------
@@ -40,14 +48,16 @@ def next_card():
     global current_card, flip_timer
     window.after_cancel(flip_timer)
     
-    if to_learn:
+    if Today:
+        current_card = random.choice(Today)
+    elif to_learn:
         current_card = random.choice(to_learn)
 
     # Update the relevant row
-    data.loc[data['French'] == current_card['French'], 'last_revised'] = datetime.datetime.now()
+    data.loc[data['French'] == current_card['French'], 'last_revised'] = datetime.datetime.now().strftime("%Y-%m-%d")
     data.loc[data['French'] == current_card['French'], 'learned'] = 'n'
     
-    data.loc[data['French'] == current_card['French'], 'nextTime'] = datetime.datetime.now() + datetime.timedelta(days=1)
+    data.loc[data['French'] == current_card['French'], 'nextTime'] = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     # Write the DataFrame back to the file
     data.to_csv("frToEng.csv", index=False)
 
@@ -70,7 +80,7 @@ def is_known():
         data = pd.read_csv("frToEng.csv")
         # Update the relevant row
         data.loc[data['French'] == current_card['French'], 'learned'] = 'y'
-        data.loc[data['French'] == current_card['French'], 'nextTime'] = datetime.datetime.now() + datetime.timedelta(days=1)
+        data.loc[data['French'] == current_card['French'], 'nextTime'] = (datetime.datetime.now() + datetime.timedelta(days=7))
 
         data.to_csv("frToEng.csv", index=False)
         # index = false discrads the index numbers
