@@ -73,20 +73,20 @@ def flip_card():
     canvas.itemconfig(card_background, image=card_back_img)
 
 def is_known():
-    if to_learn:
+    if current_card in Today:
+        Today.remove(current_card)
+    elif current_card in to_learn:
         to_learn.remove(current_card)
+    # Load the CSV file into a DataFrame
+    data = pd.read_csv("frToEng.csv")
+    # Update the relevant row
+    data.loc[data['French'] == current_card['French'], 'learned'] = 'y'
+    data.loc[data['French'] == current_card['French'], 'nextTime'] = (datetime.datetime.now() + datetime.timedelta(days=7))
 
-        # Load the CSV file into a DataFrame
-        data = pd.read_csv("frToEng.csv")
-        # Update the relevant row
-        data.loc[data['French'] == current_card['French'], 'learned'] = 'y'
-        data.loc[data['French'] == current_card['French'], 'nextTime'] = (datetime.datetime.now() + datetime.timedelta(days=7))
-
-        data.to_csv("frToEng.csv", index=False)
-        # index = false discrads the index numbers
-        next_card()
-    else:
-        print("finished")
+    data.to_csv("frToEng.csv", index=False)
+    # index = false discrads the index numbers
+    next_card()
+    
 
 
 
