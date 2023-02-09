@@ -29,9 +29,10 @@ data = data[data.apply(lambda x: is_comprehensible(x['French'], x['English']), a
 data.to_csv("frToEng.csv", index=False)
 
 to_learn = data.to_dict(orient="records")
-#Today = 
-
 now = datetime.datetime.now().strftime("%Y-%m-%d")
+
+#Today = {k: v for k, v in to_learn.items() if }
+
 
 #------------------------ Generating a English word ----------
 
