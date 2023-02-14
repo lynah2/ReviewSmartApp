@@ -43,6 +43,13 @@ now = datetime.datetime.now().strftime("%Y-%m-%d")
 if 'nextTime' not in data.columns:   #updated in next_card assuming user got it wrong then update in is_known if known
     data['nextTime'] = now 
 
+
+if 'interval' not in data.columns:   #updated by review
+    data['inteval'] = 1
+
+if 'repetitions_rev' not in data.columns:   #updated by review
+    data['repetitions_rev'] = 0
+
 if 'responseQuality' not in data.columns:   #updated in next_card assuming user got it wrong then update in is_known if known
     data['responseQuality'] = 0
 data['responseQuality'] = data['responseQuality'].astype(int)
@@ -87,10 +94,23 @@ def next_card():
     
     data.loc[data['English'] == current_card['English'], 'responseQuality'] = calculate_responseQuality(current_card['correct'], current_card['repetition'])
     
-    if current_card['repetition'] == 0: 
-        data.loc[data['English'] == current_card['English'], 'nextTime'] = review = SMTwo.first_review(0,now).review_date
+    if current_card['repetition'] == 0:
+        review = SMTwo.first_review(0,now)
+
+        data.loc[data['English'] == current_card['English'], 'nextTime'] = review.review_date
+        data.loc[data['English'] == current_card['English'], 'interval'] = review.interval
+        data.loc[data['English'] == current_card['English'], 'easiness'] = review.easiness
+        data.loc[data['English'] == current_card['English'], 'repetitions_rev'] = review.repetitions
     else:
-        data.loc[data['English'] == current_card['English'], 'nextTime'] = SMTwo(review.easiness, review.interval, review.repetitions).review(current_card['responseQuality'], now).review_date
+        easiness = float(current_card['easiness'])
+        interval = int(current_card['interval'])
+        repetitions = int(current_card['repetitions_rev'])
+        review = SMTwo(easiness, interval, repetitions)
+        
+        data.loc[data['English'] == current_card['English'], 'nextTime'] = review.review(current_card['responseQuality'], current_card['nextTime']).review_date
+        data.loc[data['English'] == current_card['English'], 'interval'] = review.interval
+        data.loc[data['English'] == current_card['English'], 'easiness'] = review.easiness
+        data.loc[data['English'] == current_card['English'], 'repetitions_rev'] = review.repetitions
     # Write the DataFrame back to the file
     data.to_csv("frToEng.csv", index=False)
 
@@ -110,13 +130,26 @@ def is_known():
     # Load the CSV file into a DataFrame
     data = pd.read_csv("frToEng.csv")
     # Update the relevant row
-    data.loc[data['English'] == current_card['English'], 'correct'] += 1
+    data.loc[data['English'] == current_card['English'], 'correct'] += 1 
     data.loc[data['English'] == current_card['English'], 'responseQuality'] = calculate_responseQuality(current_card['correct'], current_card['repetition'])
 
-    if current_card['repetition'] == 0: 
-        data.loc[data['English'] == current_card['English'], 'nextTime'] = review = SMTwo.first_review(0,now).review_date
+    if current_card['repetition'] == 0:
+        review = SMTwo.first_review(3,now)
+
+        data.loc[data['English'] == current_card['English'], 'nextTime'] = review.review_date
+        data.loc[data['English'] == current_card['English'], 'interval'] = review.interval
+        data.loc[data['English'] == current_card['English'], 'easiness'] = review.easiness
+        data.loc[data['English'] == current_card['English'], 'repetitions_rev'] = review.repetitions
     else:
-        data.loc[data['English'] == current_card['English'], 'nextTime'] = SMTwo(review.easiness, review.interval, review.repetitions).review(current_card['responseQuality'], now).review_date
+        easiness = float(current_card['easiness'])
+        interval = int(current_card['interval'])
+        repetitions = int(current_card['repetitions_rev'])
+        review = SMTwo(easiness, interval, repetitions)
+        
+        data.loc[data['English'] == current_card['English'], 'nextTime'] = review.review(current_card['responseQuality'], current_card['nextTime']).review_date
+        data.loc[data['English'] == current_card['English'], 'interval'] = review.interval
+        data.loc[data['English'] == current_card['English'], 'easiness'] = review.easiness
+        data.loc[data['English'] == current_card['English'], 'repetitions_rev'] = review.repetitions
 
     data.to_csv("frToEng.csv", index=False)
     # index = false discrads the index numbers
