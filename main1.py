@@ -1,14 +1,16 @@
 import pandas as pd
 import re
-
-BACKGROUND_COLOR = "#B1DDC6"
+import csv
+from datetime import datetime
+BACKGROUND_COLOR = "#050D54"
 import random
 from tkinter import *
 
 to_learn = {}
 current_card = {}
+learned = {}
 
-try: # try running this line of code
+try: # try running this line of codeC:\Users\Lenovo\Desktop\ankiProject\
     data = pd.read_csv("frToEng.csv")
 except FileNotFoundError:
     # If for the first time we are running it
@@ -50,6 +52,17 @@ def is_known():
     to_learn.remove(current_card)
     data_k = pd.DataFrame(to_learn)
     data_k.to_csv("frToEng_known.csv", index=False)
+    learned.update(current_card)
+    dataLearned=list(learned.values())
+    wordLearnedDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    keys = ['French', 'English', 'learningDate']
+    dataLearned.append(wordLearnedDate)
+    d = {keys[i]: dataLearned[i] for i in range(len(keys))}
+    #learned_words= pd.DataFrame(d)
+    #learned_words.to_csv("learned_words.csv", index=False) 
+    with open("learn_words2.csv", "a") as f:
+        writer = csv.writer(f)
+        writer.writerow(dataLearned) 
     # index = false discrads the index numbers
     next_card()
 #------------------------ FlashCard UI Setup -------------------------------

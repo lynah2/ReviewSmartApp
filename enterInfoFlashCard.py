@@ -79,6 +79,7 @@ Categorie_label = tkinter.Label(user_info_frame, text="Catégorie")
 Categorie_combobox = ttk.Combobox(user_info_frame, values=["", "fr_To_Eng"])
 Categorie_label.grid(row=0, column=2)
 Categorie_combobox.grid(row=1, column=2)
+
 image_ajout=PhotoImage(file="ajoutCategories.png")
 button = tkinter.Button(user_info_frame,image=image_ajout, command= run_python_script)
 button.grid(row=1, column=3, sticky="news")

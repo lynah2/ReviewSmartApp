@@ -13,7 +13,7 @@ def run_python_script():
     sys.exit()
 
 def save_to_csv():
-    data = [Categorie_entry.get(), rectoCarte_entry.get(), versoCarte_entry.get()]
+    data = [Categorie_entry.get(), rectoCarte_entry.get(), versoCarte_entry.get(), Calor_combobox.get()]
     with open('data.csv', 'a') as file:
         writer = csv.writer(file)
         writer.writerow(data)
@@ -88,7 +88,12 @@ versoCarte_entry = tkinter.Entry(user_info_frame)
 rectoCarte_entry.grid(row=1, column=1)
 versoCarte_entry.grid(row=1, column=2)
 
-
+colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink", "brown", "gray", "black", "white"]
+Calor_label = tkinter.Label(user_info_frame, text="Catégorie")
+Calor_combobox = ttk.Combobox(user_info_frame, values=colors)
+Calor_label.grid(row=2, column=0)
+Calor_combobox.grid(row=3, column=0)
+Calor_combobox.set("orange")
 
 
 
