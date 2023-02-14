@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 import datetime
-from main import is_comprehensible
+from main import calculate_responseQuality, is_comprehensible
 from supermemo2 import SMTwo
 import random
 from tkinter import *
@@ -9,16 +9,22 @@ from tkinter import *
 BACKGROUND_COLOR = "#B1DDC6"
 
 class Flashcard:
+        
+    now = datetime.datetime.now().strftime("%Y-%m-%d")
+
     @staticmethod
     def is_comprehensible(word_f, word_e):
         if not re.match("^[a-zA-Z]+$", word_f) or not re.match("^[a-zA-Z]+$", word_e) or word_f.lower() == word_e.lower():
             return False
         return True
         
+        
     def __init__(self, data_file, window):
+        global now 
+        now = datetime.datetime.now().strftime("%Y-%m-%d")
         self.data = pd.read_csv(data_file)
         self.to_learn = {}
-        self.self.current_card = {}
+        self.current_card = {}
         self.i = 0
         
         # Filter out the words that are not comprehensible
@@ -37,11 +43,8 @@ class Flashcard:
             self.data['correct'] = 0
         self.data['correct'] = self.data['correct'].astype(int)
 
-        now = datetime.datetime.now().strftime("%Y-%m-%d")
-
         if 'nextTime' not in self.data.columns:   #updated in next_card assuming user got it wrong then update in is_known if known
             self.data['nextTime'] = now 
-
 
         if 'interval' not in self.data.columns:   #updated by review
             self.data['inteval'] = 1
@@ -103,30 +106,30 @@ class Flashcard:
             self.self.current_card = random.choice(self.to_learn)
 
         # Update the relevant row
-            self.data.loc[self.data['English'] == self.self.current_card['English'], 'lastRevised'] = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.data.loc[self.data['English'] == self.self.current_card['English'], 'repetition'] += 1  
-            
-            self.data.loc[self.data['English'] == self.self.current_card['English'], 'responseQuality'] = calculate_responseQuality(self.current_card['correct'], self.current_card['repetition'])
-            
-            if self.self.current_card['repetition'] == 0:
-                review = SMTwo.first_review(0,now)
+        self.data.loc[self.data['English'] == self.self.current_card['English'], 'lastRevised'] = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.data.loc[self.data['English'] == self.self.current_card['English'], 'repetition'] += 1  
+        
+        self.data.loc[self.data['English'] == self.self.current_card['English'], 'responseQuality'] = calculate_responseQuality(self.current_card['correct'], self.current_card['repetition'])
+        
+        if self.self.current_card['repetition'] == 0:
+            review = SMTwo.first_review(0,now)
 
-                self.data.loc[self.data['English'] == self.current_card['English'], 'nextTime'] = review.review_date
-                self.data.loc[self.data['English'] == self.current_card['English'], 'interval'] = review.interval
-                self.data.loc[self.data['English'] == self.current_card['English'], 'easiness'] = review.easiness
-                self.data.loc[self.data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
-            else:
-                easiness = float(self.current_card['easiness'])
-                interval = int(self.current_card['interval'])
-                repetitions = int(self.current_card['repetitions_rev'])
-                review = SMTwo(easiness, interval, repetitions)
-                
-                self.data.loc[self.data['English'] == self.current_card['English'], 'nextTime'] = review.review(self.current_card['responseQuality'], self.current_card['nextTime']).review_date
-                self.data.loc[self.data['English'] == self.current_card['English'], 'interval'] = review.interval
-                self.data.loc[self.data['English'] == self.current_card['English'], 'easiness'] = review.easiness
-                self.data.loc[self.data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
-            # Write the DataFrame back to the file
-            self.data.to_csv("frToEng.csv", index=False)
+            self.data.loc[self.data['English'] == self.current_card['English'], 'nextTime'] = review.review_date
+            self.data.loc[self.data['English'] == self.current_card['English'], 'interval'] = review.interval
+            self.data.loc[self.data['English'] == self.current_card['English'], 'easiness'] = review.easiness
+            self.data.loc[self.data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
+        else:
+            easiness = float(self.current_card['easiness'])
+            interval = int(self.current_card['interval'])
+            repetitions = int(self.current_card['repetitions_rev'])
+            review = SMTwo(easiness, interval, repetitions)
+            
+            self.data.loc[self.data['English'] == self.current_card['English'], 'nextTime'] = review.review(self.current_card['responseQuality'], self.current_card['nextTime']).review_date
+            self.data.loc[self.data['English'] == self.current_card['English'], 'interval'] = review.interval
+            self.data.loc[self.data['English'] == self.current_card['English'], 'easiness'] = review.easiness
+            self.data.loc[self.data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
+        # Write the DataFrame back to the file
+        self.data.to_csv("frToEng.csv", index=False)
 
         self.canvas.itemconfig(self.card_title, text="French", fill="black")
         self.canvas.itemconfig(self.card_word, text=self.self.current_card["French"], fill="black")
@@ -135,12 +138,52 @@ class Flashcard:
     
 
     def is_known(self):
-        self.to_learn.remove(self.self.current_card)
-        self.data.loc[self.data['English'] == self.self.current_card['English'], 'correct'] += 1
-        self.data.to_csv(self.data_file, index=False)
+        # Load the CSV file into a DataFrame
+        data = pd.read_csv("frToEng.csv")
+        # Update the relevant row
+        data.loc[data['English'] == self.current_card['English'], 'correct'] += 1 
+        data.loc[data['English'] == self.current_card['English'], 'responseQuality'] = calculate_responseQuality(self.current_card['correct'], self.current_card['repetition'])
+
+        if self.current_card['repetition'] == 0:
+            review = SMTwo.first_review(3,now)
+
+            data.loc[data['English'] == self.current_card['English'], 'nextTime'] = review.review_date
+            data.loc[data['English'] == self.current_card['English'], 'interval'] = review.interval
+            data.loc[data['English'] == self.current_card['English'], 'easiness'] = review.easiness
+            data.loc[data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
+        else:
+            easiness = float(self.current_card['easiness'])
+            interval = int(self.current_card['interval'])
+            repetitions = int(self.current_card['repetitions_rev'])
+            review = SMTwo(easiness, interval, repetitions)
+            
+            data.loc[data['English'] == self.current_card['English'], 'nextTime'] = review.review(self.current_card['responseQuality'], self.current_card['nextTime']).review_date
+            data.loc[data['English'] == self.current_card['English'], 'interval'] = review.interval
+            data.loc[data['English'] == self.current_card['English'], 'easiness'] = review.easiness
+            data.loc[data['English'] == self.current_card['English'], 'repetitions_rev'] = review.repetitions
+
+        data.to_csv("frToEng.csv", index=False)
+        # index = false discrads the index numbers
+        
         self.next_card()
 
-    
+    def calculate_responseQuality(correct, repetition):
+        if repetition != 0:
+            res = correct / repetition
+        else:
+            res = 0
+        if res == 1:
+            return 5
+        elif res > 0.75:
+            return 4
+        elif res > 0.5:
+            return 3
+        elif res > 0.25:
+            return 2
+        elif res == 0:
+            return 0
+        else:   
+            return 1 
 
 mafenetre = Tk()
 mafenetre.title("Anki")
