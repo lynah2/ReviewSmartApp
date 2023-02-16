@@ -4,6 +4,7 @@ import datetime
 from supermemo2 import SMTwo
 import random
 from tkinter import *
+import matplotlib as plt
 
 BACKGROUND_COLOR = "#B1DDC6"
 
@@ -162,8 +163,7 @@ class Flashcard:
         self.data.loc[self.data['English'] == self.current_card['English'], 'responseQuality'] = response_quality
         
         if self.current_card['repetition'] == 0:
-            review = SMTwo(1, 7, 1).first_review(5,now)
-            print(review)
+            review = SMTwo.first_review(5,now)
 
             self.data.loc[self.data['English'] == self.current_card['English'], 'nextTime'] = review.review_date
             self.data.loc[self.data['English'] == self.current_card['English'], 'interval'] = review.interval
@@ -184,6 +184,10 @@ class Flashcard:
         # index = false discrads the index numbers
         
         self.next_card()
+
+
+    def graph():
+        ...
 
     @staticmethod
     def calculate_responseQuality(correct, repetition):
