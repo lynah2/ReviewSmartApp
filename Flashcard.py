@@ -4,7 +4,9 @@ import datetime
 from supermemo2 import SMTwo
 import random
 from tkinter import *
-import matplotlib as plt
+import matplotlib.pyplot as plt
+from collections import Counter
+import csv
 
 BACKGROUND_COLOR = "#B1DDC6"
 
@@ -95,8 +97,12 @@ class Flashcard:
         self.wrong_button = Button(image=self.wrong_img, highlightthickness=0, command=self.next_card)
         self.wrong_button.grid(row=1, column=1)
 
-        #self.label = self.canvas.create_text(400, 150, text="hllo", font=("Ariel", 40, "italic"))
-        #self.label.grid(row=4, column=0, columnspan=2)
+        self.graph1 = Button(text="First graph", command=self.graph_correct)
+        self.graph1.grid(row=2, column=0, columnspan=2)
+
+        self.graph2 = Button(text="Second graph", command=self.graph_level)
+        self.graph2.grid(row=2, column=1, columnspan=2)
+
         self.flip_timer = self.window.after(3000, func=self.flip_card)
 
         self.next_card()
@@ -162,6 +168,8 @@ class Flashcard:
         response_quality = self.calculate_responseQuality(self.current_card['correct']+1, self.current_card['repetition']+1)
         self.data.loc[self.data['English'] == self.current_card['English'], 'responseQuality'] = response_quality
         
+        
+
         if self.current_card['repetition'] == 0:
             review = SMTwo.first_review(5,now)
 
@@ -182,12 +190,73 @@ class Flashcard:
 
         data.to_csv("frToEng.csv", index=False)
         # index = false discrads the index numbers
+
+        history = open('history.csv', 'a',newline='')
+        writer = csv.writer(history)
+        data = [self.current_card['English'], self.current_card['French'],now]
+        writer.writerow(data)
+        history.close()
+
         
         self.next_card()
 
 
-    def graph():
-        ...
+    def graph_correct(self):
+        column_index = 2
+        x = []
+        y = []
+        value_counts = Counter()
+
+        with open('history.csv', 'r') as csvfile:
+            plots = csv.reader(csvfile, delimiter=',')
+            for row in plots:
+                try:
+                    value = datetime.datetime.strptime(row[column_index], "%Y-%m-%d").date()
+                    value_counts[value] += 1
+                except (IndexError, ValueError) as e:
+                    print(f"Error: {e}")
+
+        x = sorted(value_counts.keys())
+        y = [value_counts[key] for key in x]
+        print(x)
+        print(y)
+        fig = plt.figure()
+        plt.plot(x, y, marker='o')
+        plt.xlabel('jour')
+        plt.ylabel('Nombre de mots')
+        plt.title('Performance par jour')
+        plt.xticks(rotation=90)
+        plt.show()
+
+
+    def graph_level(self):
+        column_index = 9
+        x = []
+        y = []
+        value_counts = Counter()
+
+        with open('frToEng.csv', 'r') as csvfile:
+            plots = csv.reader(csvfile, delimiter=',')
+            headers = next(plots)
+            for row in plots:
+                try:
+                    value = row[column_index]
+                    print(value)
+                    value_counts[value] += 1
+                except (IndexError, ValueError) as e:
+                    print(f"Error: {e}")
+
+        x = sorted(value_counts.keys())
+        y = [value_counts[key] for key in x]
+        print(x)
+        print(y)
+        fig = plt.figure()
+        plt.plot(x, y, marker='o')
+        plt.xlabel('Niveaux')
+        plt.ylabel('Nombre de mots')
+        plt.title('Niveau de maitrise')
+        plt.show()
+
 
     @staticmethod
     def calculate_responseQuality(correct, repetition):

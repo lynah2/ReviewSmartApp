@@ -1,6 +1,3 @@
-import supermemo2
 
 
-supermemo2
-
-
+        self.graph1 = Button(text="First graph", command=self.graph_correct)
