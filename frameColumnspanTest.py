@@ -3,6 +3,7 @@ from tkinter import *
 import tkinter as tk
 import subprocess
 import csv
+from flashCards import flashCard
 
 k=1
 m=k+2
@@ -14,6 +15,11 @@ def add_frames_from_csv(root):
         global k
         for row in reader:
             if len(row)>0:#41B77F, width=120, height=100
+              label=row[2]
+              color=row[3]
+              recto=row[0]
+              verso=row[1]
+              fCard=flashCard(label,recto, verso, color)
               info_frame =tk.Frame(root)
               info_frame.grid(row= k, column=i, padx=20, pady=20 )
               info_frame.config(bg='#050D54')
@@ -23,9 +29,9 @@ def add_frames_from_csv(root):
               button11.grid(pady=1, padx=1, row=2, column=3,sticky="w")
               button12=Button(info_frame,image=image_ajout2,borderwidth=0, cursor='hand2', command=add_button)
               button12.grid(pady=1, padx=1, row=2, column=4, sticky="w")
-              button13=Button(info_frame,image=image_ajout3,borderwidth=0, cursor='hand2', command=add_button)
+              button13=Button(info_frame,image=image_ajout3,borderwidth=0, cursor='hand2', command=fCard.graph)
               button13.grid(pady=1, padx=1, row=2, column=5, sticky="w")
-              button14=Button(info_frame,image=image_ajout4,borderwidth=0, cursor='hand2', command=add_button)
+              button14=Button(info_frame,image=image_ajout4,borderwidth=0, cursor='hand2', command=fCard.hangman)
               button14.grid(pady=1, padx=1, row=2, column=6, sticky="w")
               button15=Button(info_frame,image=image_ajout5,borderwidth=0, cursor='hand2', command=add_button)
               button15.grid(pady=1, padx=1, row=2, column=7, sticky="w")
