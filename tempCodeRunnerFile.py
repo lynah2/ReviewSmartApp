@@ -1,3 +1,3 @@
-
-
-        self.graph1 = Button(text="First graph", command=self.graph_correct)
+def run_python_script():
+#     subprocess.Popen(["python", "enterInfoFlashCard.py"])
+#     sys.exit()
