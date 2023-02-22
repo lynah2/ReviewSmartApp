@@ -1,3 +1,8 @@
 ls,list the contents of the directory,2023-02-12
 pwd,print working directory,2023-02-14
 cd,change directory,2023-02-15
+list,ls,2023-02-22
+remove,rm,2023-02-22
+copy,cp,2023-02-22
+list,ls,2023-02-22
+write,echo,2023-02-22

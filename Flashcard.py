@@ -96,9 +96,9 @@ class Flashcard:
         self.canvas.itemconfig(self.card_word, text=self.current_card[self.verso], fill="white")
         self.canvas.itemconfig(self.card_background, image=self.card_back_img)
 
-    def next_card(self):
+    def next_card(self,window):
 
-        self.window.after_cancel(self.flip_timer)
+        window.after_cancel(self.flip_timer)
         if self.to_learn:
             self.current_card = random.choice(self.to_learn)
             self.to_learn.remove(self.current_card)
@@ -137,18 +137,18 @@ class Flashcard:
         self.canvas.itemconfig(self.card_title, text=self.recto, fill="black")
         self.canvas.itemconfig(self.card_word, text=self.current_card[self.recto], fill="black")
         self.canvas.itemconfig(self.card_background, image=self.card_front_img)
-        self.flip_timer = self.window.after(3000, func=self.flip_card)
+        self.flip_timer = window.after(3000, func=self.flip_card)
     
 
     def get_window(self):
         return self.window
 
-    def show_window(self):
-        self.window = tkinter.Tk()
-        self.window.title("Flashcard app")
-        self.window.config(background=BACKGROUND_COLOR)
+    def show_window(self,window):
+        # self.window = tkinter.Tk()
+        # self.window.title("Flashcard app")
+        # self.window.config(background=BACKGROUND_COLOR)
 
-        self.canvas = Canvas(width=800, height=326)
+        self.canvas = Canvas(window,width=800, height=326)
         
         self.card_front_img = PhotoImage(file="images/white.png")
         self.card_back_img = PhotoImage(file="images/Black.png")
@@ -162,9 +162,9 @@ class Flashcard:
         self.canvas.config(bg=BACKGROUND_COLOR, highlightthickness=0)
         self.canvas.grid(row=0, column=0, columnspan=2)
         
-        self.right_button = Button(image=self.right_img, highlightthickness=0, command=self.is_known)
+        self.right_button = Button(window,image=self.right_img, highlightthickness=0, command=lambda: (self.is_known(window)))
         self.right_button.grid(row=1, column=0)
-        self.wrong_button = Button(image=self.wrong_img, highlightthickness=0, command=self.next_card)
+        self.wrong_button = Button(window,image=self.wrong_img, highlightthickness=0, command=lambda: (self.next_card(window)))
         self.wrong_button.grid(row=1, column=1)
 
         # self.graph1 = Button(text="First graph", command=self.graph_correct)
@@ -184,16 +184,17 @@ class Flashcard:
 
         # self.supp = Button(text="Suppression", command=self.supprimer_carte)
         # self.supp .grid(row=3, column=2, columnspan=5)
-        self.flip_timer = self.window.after(3000, func=self.flip_card)
-        self.next_card()
+        self.flip_timer = window.after(3000, func=self.flip_card)
+        self.next_card(window)
         # label1 = Label(self.window, text="Enter value recto:")
         # label1.pack()
         print("windoow showed")
-        self.get_window().mainloop()
+        #self.get_window().mainloop()
+        window.mainloop
 
     
         
-    def is_known(self):
+    def is_known(self,window):
         # Load the CSV file into a DataFrame
         data = pd.read_csv(self.data_file)
         # Update the relevant row
@@ -231,7 +232,7 @@ class Flashcard:
         history.close()
 
         
-        self.next_card()
+        self.next_card(window)
 
 
     def graph_correct(self):
@@ -437,31 +438,86 @@ class Flashcard:
             writer.writerow(new_row)
 
     def modifier_carte(self):
-        
-        
+              
+        # Create the main window
         root = Tk()
-        root.title("Modifier carte")
-        root.geometry("700x250")
+        root.title("Flashcard App - Modification")
+        root.geometry("500x600")
 
-        label1 = Label(root, text="Entrez valeur recto:")
-        label1.pack()
-        recto = Entry(root)
-        recto.pack()
+        # Define the colors list
+        colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink", "brown", "gray", "black"]
 
-        label2 = Label(root, text="Entrez nouvelle valeur recto:")
-        label2.pack()
-        new_recto = Entry(root)
-        new_recto.pack()
+        # Create a function to handle button clicks
 
-        label3 = Label(root, text="Entrez nouvelle valeur verso:")
-        label3.pack()
-        new_verso = Entry(root)
-        new_verso.pack()
+        # Create a frame to hold the three sections
+        sections_frame = Frame(root)
+        sections_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        submit_button = Button(root, text="Submit", command=lambda: (self.change_card(recto.get(),new_recto.get(), new_verso.get()), root.destroy()))
-        submit_button.pack()
+        # Create the first section with a label, combobox, and button
+        section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
+        section1_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section1_label = Label(section1_frame, text="Modification du nom de la Flashcard")
+        section1_label.pack(padx=10, pady=10)
+        section1_label1 = Label(section1_frame, text="Veuillez entrer le nouveau nom")
+        section1_label1.pack(padx=10, pady=10)
+        section1_entry = Entry(section1_frame)
+        section1_entry.pack(padx=10, pady=10)
+        section1_button = Button(section1_frame, text="Changer nom"""", command=lambda: (self.change_title(section1_label1.get()), root.destroy())""")
+        section1_button.pack(padx=10, pady=10)
 
+        # Create the second section with a label, combobox, and button
+        section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
+        section2_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard")
+        section2_label.pack(padx=10, pady=10)
+        section2_label1 = Label(section2_frame, text="Veuillez choisir la nouvelle couleur")
+        section2_label1.pack(padx=10, pady=10)
+        section2_combobox = ttk.Combobox(section2_frame, values=colors)
+        section2_combobox.pack(padx=10, pady=10)
+        section2_button = Button(section2_frame, text="Changer couleur")
+        section2_button.pack(padx=10, pady=10)
+
+        # Create the third section with a label, combobox, and button
+        section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
+        section3_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard")
+        section3_label.pack(padx=10, pady=10)
+        section3_label1 = Label(section3_frame, text="Veuillez choisir la carte à changer")
+        section3_label1.pack(padx=10, pady=10)
+        section3_entry = Entry(section3_frame)
+        section3_entry.pack(padx=10, pady=10)
+        section3_button = Button(section3_frame, text="Changer carte", command=self.change_card)
+        section3_button.pack(padx=10, pady=10)
+
+        # Create an exit button
+        exit_button = Button(root, text="Exit", command=root.quit)
+        exit_button.pack(side="bottom", padx=10, pady=10)
+
+        # Start the main event loop
         root.mainloop()
+
+    def change_title(self,new_title):
+        title = self.label
+        with open("flashcards.csv", mode='r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            header = next(reader)  # read the header row
+            rows = list(reader)  # read the remaining rows
+
+        with open("flashcards.csv", mode='w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+
+            # Write the header row
+            writer.writerow(header)
+
+            # Loop through each row in the CSV file
+            for row in rows:
+                if row[2] == title:
+                    # This row corresponds to the flashcard with the specified recto value
+                    # Replace the values in this row with the new values
+                    row[2] = new_title
+
+                # Write the updated row to the new CSV file
+                writer.writerow(row)
 
     def change_card(self,recto,new_recto,new_verso):
 
@@ -500,8 +556,8 @@ class Flashcard:
 
         submit_button = Button(root, text="Submit", command=lambda: (self.remove_card(recto.get()), root.destroy()))
         submit_button.pack()
-
         root.mainloop()
+
     def remove_card(self,recto):
         print("remove card")
         """Removes a flashcard with the specified recto value from the deck and the corresponding line from the CSV file."""
@@ -665,8 +721,8 @@ class Flashcard:
 
 
  # create instance d'objet Flashcard
-# flashcard_fr_eng = Flashcard('frToEng','English','French', data_file='frToEng.csv')
-# flashcard_fr_eng.supprimer_carte()
+# flashcard_fr_eng = Flashcard('frToEng','English','French',"white",'frToEng.csv','frToEng_history.csv')
+# # flashcard_fr_eng.supprimer_carte()
 # flashcard_fr_eng.show_window()
 
         
