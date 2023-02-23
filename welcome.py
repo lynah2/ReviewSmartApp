@@ -10,12 +10,18 @@ def run_python_script():
 
 
 root = Tk()
-
+root.title('SmartReview')
 # Set window size
-root.geometry("1920x1080")
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Set the window size to full screen
+root.geometry("%dx%d+0+0" % (screen_width, screen_height))
+
+
 
 # Load image
-image = Image.open("background1.png")
+image = Image.open("images/background.png")
 
 # Convert image to PhotoImage object
 image = ImageTk.PhotoImage(image)
@@ -28,9 +34,9 @@ background_label.pack(fill="both", expand="yes")
 #image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
 button =Button(root,text='Commmencer',font=("Courrier", 14, 'bold'),width=15,bg='#FAD727',fg='white',height=2, borderwidth=0, cursor='hand2', border='0', command=run_python_script)
 button.config()
-button.place( x=100, y=450)
+button.place( x=80, y=477)
 button =Button(root,text='Aide',font=("Courrier", 14, 'bold'),width=15,bg='#FAD727',fg='white',height=2, borderwidth=0, cursor='hand2', border='0', command=add_button)
 button.config()
-button.place( x=350, y=450)
+button.place( x=330, y=477)
 
 root.mainloop()
