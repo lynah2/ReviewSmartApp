@@ -11,10 +11,11 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import csv
 import os
+from Hangman import HangMan
 
 
 
-BACKGROUND_COLOR = "#B1DDC6"
+BACKGROUND_COLOR = "#050D54"
 
 class Flashcard:
     
@@ -53,7 +54,6 @@ class Flashcard:
         if 'correct' not in self.data.columns:   #updated if known
             self.data['correct'] = 0
         self.data['correct'] = self.data['correct'].fillna(0).astype(int)
-
 
         if 'repetition' not in self.data.columns:   #updated in next_card
             self.data['repetition'] = 0
@@ -171,9 +171,9 @@ class Flashcard:
         self.canvas.grid(row=0, column=0, columnspan=2)
         
         self.right_button = Button(window,image=self.right_img, highlightthickness=0, command=lambda: (self.is_known(window)))
-        self.right_button.grid(row=1, column=0)
+        self.right_button.grid(row=1, column=0,pady='10')
         self.wrong_button = Button(window,image=self.wrong_img, highlightthickness=0, command=lambda: (self.next_card(window)))
-        self.wrong_button.grid(row=1, column=1)
+        self.wrong_button.grid(row=1, column=1, pady='10')
 
         # self.graph1 = Button(text="First graph", command=self.graph_correct)
         # self.graph1.grid(row=2, column=0, columnspan=5)
@@ -242,7 +242,9 @@ class Flashcard:
         
         self.next_card(window)
 
-
+    def playHangMan(self):
+       csvFile=self.label+'.csv'
+       HangMan(csvFile)
     def graph_correct(self):
         
         column_index = 2
@@ -459,7 +461,7 @@ class Flashcard:
 
         # Create a frame to hold the three sections
         sections_frame = Frame(root)
-        sections_frame.pack(fill="both", expand=True, padx=10, pady=4)
+        sections_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Create the first section with a label, combobox, and button
         section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
@@ -473,7 +475,7 @@ class Flashcard:
         section1_button = Button(section1_frame, text="Changer nom", command=lambda: (self.change_title(section1_entry.get()), section1_result_label.config(text="Nom changé avec succès !")))
         section1_button.pack(padx=10, pady=4)
         section1_result_label = Label(section1_frame, text="")
-        section1_result_label.pack(padx=10, pady=4)
+        section1_result_label.pack(padx=10, pady=10)
 
 
         # Create the second section with a label, combobox, and button

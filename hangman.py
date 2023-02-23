@@ -1,112 +1,118 @@
-import random
 from tkinter import *
-from tkinter import messagebox
+import random
+import tkinter.messagebox as msg
 import csv
 
-def hangman(data_file):
-    score = 0
-    run = True
+class HangMan:
+    def __init__(self, csv_file_name):
+        self.csv_file_name = csv_file_name
+        self.root = Tk()  # INSTANCE OF Tk()
+        self.width, self.height = 500, 550  # HEIGHT AND WIDTH OF THE CREATED WINDOW
+        # // means to divide the value and don't give the decimal value and called (FLOOR DIVISION)
+        self.s_width = ((self.root.winfo_screenwidth() // 2) - (self.width // 2))  # (WIDTH OF THE MONITOR DISPLAY)//2 - (WIDTH OF THE CREATED WINDOW)//2
+        self.s_height = ((self.root.winfo_screenheight() // 2) - (self.height // 2))   # (HEIGHT OF THE MONITOR DISPLAY)//2 - (HEIGHT OF THE CREATED WINDOW)//2
+        self.root.geometry(f'{self.width}x{self.height}+{self.s_width}+{self.s_height}')  # AFTER THE MONITOR DISPLAY HEIGHT AND WIDTH THE HEIGHT AND WIDTH OF THE CREATED WINDOW SHOULD COME TO CENTER IT
+        self.root.title("Hang-Man Game")  # TITLE OF THE WINDOW
+        self.root.resizable(0, 0)  # WINDOW CAN'T BE RESIZED
+        self.root.configure(bg='#050D54')
+        # CREATING THE FIGURE OF HANG MAN #
+        self.canvas = Canvas(self.root, width=500, height=260)  # CREATING A CANVAS ON WHICH WE CAN DRAW LINES AND SHAPES
+        self.canvas.pack(pady=30)# PACKING THE CANVAS TO BE DISPLAYED ON WINDOW
+        self.canvas.configure(bg='#050D54')
+        self.canvas.create_line(150, 260, 250, 260, width=3, fill='white')  # BASE LINE OF THE STAND
+        self.canvas.create_line(200, 260, 200, 40, width=3, fill='white')  # LINE OF THE STAND
+        self.canvas.create_line(200, 90, 250, 40, width=3, fill='white')  # SUPPORTER OF STAND
+        self.canvas.create_line(200, 40, 300, 40, width=3, fill='white')  # TOP LINE OF STAND
+        self.canvas.create_line(300, 40, 300, 70, width=3, fill='white')  # ROPE OF THE STAND
+        self.canvas.create_oval(280, 70, 320, 100, width=3, fill='white')  # HEAD OF THE MAN
+        self.c5 = self.canvas.create_line(300, 100, 300, 180, width=3, fill='white')  # STOMACH OF THE MAN :)
+        self.c4 = self.canvas.create_line(300, 105, 270, 155, width=3, fill='white')  # LEFT HAND OF THE MAN
+        self.c3 = self.canvas.create_line(300, 105, 330, 155, width=3, fill='white')  # RIGHT HAND OF THE MAN
+        self.c2 = self.canvas.create_line(300, 180, 270, 230, width=3, fill='white')  # LEFT LEG OF THE MAN
+        self.c1 = self.canvas.create_line(300, 180, 330, 230, width=3, fill='white')  # RIGHT LEG OF THE MAN
+        
+        self.count = 1
+        self.picked_word = self.choose()
+        self.check = StringVar()
+        self.show = self.scramble(self.picked_word)
+        self.correct = NONE
 
-    # main loop
-    while run:
-        root = Tk()
-        root.geometry('905x600')
-        root.title('HANG MAN')
-        root.config(bg = '#E7FFFF')
-        count = 0
-        win_count = 0
+        self.lbl = Label(self.root, text=self.show, font=("Candara", 25, "bold"),bg='#050D54',fg='#38ADFC')  # MAKING THE LABEL WHICH WILL SHOW YOU THE JUMBLE WORDS
+        self.lbl.pack()  # PACKING THE LABEL
 
-        # choosing word
-        with open(data_file) as f:
+        self.txt = Entry(self.root, textvariable=self.check, font=("Candara", 25, "bold"), justify=CENTER, relief=GROOVE, bd=2)  # IN THIS THE USER WILL ANSWER
+        self.txt.pack(pady=10)  # PACKING THE ENTRY WIDGET
+
+        self.btn = Button(self.root, text="SUBMIT", font=("Candara", 20, "bold"), relief=GROOVE, bg="orange",fg='white', command=self.process)  # CLICKED IT CHECK WHETHER THE ANSWER WAS RIGHT ON WRONG
+        self.btn.pack(pady=20)  # PACKING THE BUTTON
+        self.root.bind('<Return>', self.process)  # BINDING ENTER KEY TO VALIDATE
+
+        self.root.mainloop()
+
+    def choose(self):
+        with open(self.csv_file_name) as f:
             l= csv.reader(f)
             rows = list(l)
             random_row = random.choice(rows)
             selected_word=random_row[1]
             toGuess=random_row[0]
-        
-        
-        # creation of word dashes variables
-        x = 250
-        for i in range(0,len(selected_word)):
-            x += 60
-            exec('d{}=Label(root,text="_",bg="#E7FFFF",font=("arial",20))'.format(i))
-            exec('d{}.place(x={},y={})'.format(i,x,350))
-            
-        #letters icon
-        al = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-        for let in al:
-            exec('{}=PhotoImage(file="images/{}.png")'.format(let,let))
-            
-        # hangman images
-        h123 = ['h1','h2','h3','h4','h5','h6','h7']
-        for hangman in h123:
-            exec('{}=PhotoImage(file="images/{}.png")'.format(hangman,hangman))
-            
-        #letters placement
-        button = [['b1','a',0,470],['b2','b',70,470],['b3','c',140,470],['b4','d',210,470],['b5','e',280,470],['b6','f',350,470],['b7','g',420,470],['b8','h',490,470],['b9','i',560,470],['b10','j',630,470],['b11','k',700,470],['b12','l',770,470],['b13','m',840,470],['b14','n',0,530],['b15','o',70,530],['b16','p',140,530],['b17','q',210,530],['b18','r',280,530],['b19','s',350,530],['b20','t',420,530],['b21','u',490,530],['b22','v',560,530],['b23','w',630,530],['b24','x',700,530],['b25','y',770,530],['b26','z',840,530]]
+            pick = toGuess
+            return pick
 
-        for q1 in button:
-            exec('{}=Button(root,bd=0,command=lambda:check("{}","{}"),bg="#E7FFFF",activebackground="#E7FFFF",font=10,image={})'.format(q1[0],q1[1],q1[0],q1[1]))
-            exec('{}.place(x={},y={})'.format(q1[0],q1[2],q1[3]))
-            
-        #hangman placement
-        han = [['c1','h1'],['c2','h2'],['c3','h3'],['c4','h4'],['c5','h5'],['c6','h6'],['c7','h7']]
-        for p1 in han:
-            exec('{}=Label(root,bg="#E7FFFF",image={})'.format(p1[0],p1[1]))
+    def scramble(self, word):
+        print(word)
+        random_word = random.sample(word, len(word))  # IT MAKE A STRING INTO A LIST BY BRAKING EACH LETTER
+        scrambled = ''.join(random_word)
+        return scrambled
+    
+    def validate(self):
+        #global count, picked_word, c1, c2, c3, c4, c5, show
+        if self.check.get().upper() == self.picked_word.upper():
+            self.picked_word = self.choose()
+            self.show = self.scramble(self.picked_word)
+            self.check.set("")
+            self.lbl.config(text=self.show)
+        else:
+            if self.count == 1 and self.check.get().upper() != self.picked_word:
+                self.count += 1
+                self.canvas.delete(self.c1)
+            elif self.count == 2 and self.check.get().upper() != self.picked_word:
+                self.count += 1
+                self.canvas.delete(self.c2)
+            elif self.count == 3 and self.check.get().upper() != self.picked_word:
+                self.count += 1
+                self.canvas.delete(self.c3)
+            elif self.count == 4 and self.check.get().upper() != self.picked_word:
+                self.count += 1
+                self.canvas.delete(self.c4)
+            elif self.count == 5 and self.check.get().upper() != self.picked_word:
+                self.count += 1
+                self.canvas.delete(self.c5)
+                msg.showwarning("Game Over", "Please Try Again...")
+                self.c1 = self.canvas.create_line(300, 180, 330, 230, width=3)
+                self.c2 = self.canvas.create_line(300, 180, 270, 230, width=3)
+                self.c3 = self.canvas.create_line(300, 105, 330, 155, width=3)
+                self.c4 = self.canvas.create_line(300, 105, 270, 155, width=3)
+                self.c5 = self.canvas.create_line(300, 100, 300, 180, width=3)
+            if self.count == 6:
+                self.count = 1
+            self.check.set("")
 
-        # placement of first hangman image
-        c1.place(x = 300,y =- 50)
-        
-        #exit button
-        def close():
-            global run
-            answer = messagebox.askyesno('ALERT','YOU WANT TO EXIT THE GAME?')
-            if answer == True:
-                run = False
-                root.destroy()
-                
-        e1 = PhotoImage(file = 'images/exit.png')
-        ex = Button(root,bd = 0,command = close,bg="#E7FFFF",activebackground = "#E7FFFF",font = 10,image = e1)
-        ex.place(x=770,y=10)
-        s2 = 'SCORE:'+str(score)
-        s1 = Label(root,text = s2,bg = "#E7FFFF",font = ("arial",25))
-        s1.place(x = 10,y = 10)
-        tentatives=str(6-count)
-        s3 = Label(root,text='-----------------------------\n Vous avez '+tentatives+' tentatives\n pour trouver l\'équivalent  \n du mot suivant: \n"'+toGuess+'"\n-----------------------------',
-                bg = "black",
-                fg="white",
-                font = ("arial",15))
-        s3.place(x = 10,y = 100)
-        # button press check function
-        def check(letter,button):
-            global count,win_count,run,score
-            exec('{}.destroy()'.format(button))
-            if letter in selected_word:
-                for i in range(0,len(selected_word)):
-                    if selected_word[i] == letter:
-                        win_count += 1
-                        exec('d{}.config(text="{}")'.format(i,letter.upper()))
-                if win_count == len(selected_word):
-                    score += 1
-                    answer = messagebox.askyesno('GAME OVER','YOU WON!\nWANT TO PLAY AGAIN?')
-                    if answer == True:
-                        run = True
-                        root.destroy()   
-                    else:
-                        run = False
-                        root.destroy()
-            else:
-                count += 1
-                exec('c{}.destroy()'.format(count))
-                exec('c{}.place(x={},y={})'.format(count+1,300,-50))
-                if count == 6:
-                    answer = messagebox.askyesno('GAME OVER','YOU LOST!\nWANT TO PLAY AGAIN?')
-                    if answer == True:
-                        run = True
-                        score = 0
-                        root.destroy()
-                    else:
-                        run = False
-                        root.destroy()         
-        root.mainloop()
 
+    # PROCESSING TO VALIDATE #
+    def process(self, event=""):
+        self.correct = TRUE
+        self.validate()
+        #global correct
+        # if self.check.get().isalpha():
+        #     self.correct = TRUE
+        #     self.validate()
+        # else:
+        #     self.correct = FALSE
+        #     msg.showerror('Error', 'Please make use of only Alphabets')
+
+
+
+#test
+#csvFile='frToEng.csv'
+#hangmantest=HangMan(csvFile)

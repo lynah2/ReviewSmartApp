@@ -2,14 +2,10 @@ from tkinter import *
 from PIL import Image, ImageTk
 import subprocess
 
-def add_button():
-    subprocess.call(["python", "enterInfoFlashCard.py"])
-
-
 def aide(root):
     sub_window = Toplevel(root)
     sub_window.title("Flashcard App - Aide!")
-    #sub_window.geometry("200x200")
+    #sub_window.geometry("600x600")
     label = Label(sub_window, text="Comment fonctionne notre application?",font=("Courrier", 28))
     label.pack()
     # Create a frame to hold the three sections
@@ -23,9 +19,6 @@ def aide(root):
     section1_label1 = Label(section1_frame, text="Notre application a pour objectif de faciliter la mémorisetion de nouvelles informations en se basant sur un système de répétition espacée (SPACED REPETITION).")
     section1_label1.pack(padx=10, pady=4)
     
-    
-
-
     # Create the second section with a label, combobox, and button
     section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
@@ -72,12 +65,19 @@ def run_python_script():
 
 
 root = Tk()
+root.title('SmartReview')
 
 # Set window size
-root.geometry("1220x600")
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Set the window size to full screen
+root.geometry("%dx%d+0+0" % (screen_width, screen_height))
+
+
 
 # Load image
-image = Image.open("images/background1.png")
+image = Image.open("images/background.png")
 
 # Convert image to PhotoImage object
 image = ImageTk.PhotoImage(image)
@@ -90,9 +90,9 @@ background_label.pack(fill="both", expand="yes")
 #image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
 button =Button(root,text='Commmencer',font=("Courrier", 14, 'bold'),width=15,bg='#FAD727',fg='white',height=2, borderwidth=0, cursor='hand2', border='0', command=run_python_script)
 button.config()
-button.place( x=100, y=450)
-button =Button(root,text='Aide',font=("Courrier", 14, 'bold'),width=15,bg='#FAD727',fg='white',height=2, borderwidth=0, cursor='hand2', border='0',command=lambda: (aide(root)))
+button.place( x=80, y=477)
+button =Button(root,text='Aide',font=("Courrier", 14, 'bold'),width=15,bg='#FAD727',fg='white',height=2, borderwidth=0, cursor='hand2', border='0', command=lambda: (aide(root)))
 button.config()
-button.place( x=350, y=450)
+button.place( x=330, y=477)
 
 root.mainloop()
