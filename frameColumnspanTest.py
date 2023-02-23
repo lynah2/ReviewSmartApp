@@ -21,44 +21,49 @@ def add_frames_from_csv(root):
     with open("flashcards.csv") as f:
         reader = csv.reader(f)
         i=1
+        count = 0
         global k
-        commands=[]
+        fcards = {}
         
         for row in reader:
             if len(row)>0:
-              verso=row[0]
-              recto=row[1]
-              label=row[2]
-              color=row[3]
-              data_file = row[4]
-              history_file = row[5]
-              info_frame =tk.Frame(root)
-              info_frame.grid(row= k, column=i, padx=20, pady=20 )
-              info_frame.config(bg='#050D54')
-              
-              fCard=Flashcard(label,recto,verso,color,data_file,history_file)
-              #info_frame.config(bg=)
-              nb = fCard.get_nb_cards()
-              nb_passed = fCard.get_nb_passed()
-              #commands.append(fCard.show_window(create_new_window(root)))
-              button=Button(info_frame, text=row[2], font=("Courrier", 24),cursor='hand2', height=3, width=19, bg=row[3], fg='white', command=lambda: [fCard.show_window(create_new_window(root))])
-              button.grid(row=0, column=0, pady=0,  padx=0, columnspan=10, sticky="ne")
-              label = tk.Label(info_frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
-              label.grid(row=0, column=0, pady=10,  padx=10, columnspan=10, sticky="ne")
-              button11=Button(info_frame,image=image_ajout1,borderwidth=0, cursor='hand2', command=fCard.ajouter_carte)
-              button11.grid(pady=1, padx=1, row=2, column=3,sticky="w")
-              button12=Button(info_frame,image=image_ajout2,borderwidth=0, cursor='hand2', command=fCard.modifier_carte)
-              button12.grid(pady=1, padx=1, row=2, column=4, sticky="w")
-              button13=Button(info_frame,image=image_ajout3,borderwidth=0, cursor='hand2', command=fCard.dashboard)
-              button13.grid(pady=1, padx=1, row=2, column=5, sticky="w")
-              button14=Button(info_frame,image=image_ajout4,borderwidth=0, cursor='hand2', command=lambda: (run_game_script(data_file)))
-              button14.grid(pady=1, padx=1, row=2, column=6, sticky="w")
-              button15=Button(info_frame,image=image_ajout5,borderwidth=0, cursor='hand2', command=fCard.supprimer_carte)
-              button15.grid(pady=1, padx=1, row=2, column=7, sticky="w")
-              i+=1
-              if i%3==0:
-                i=0
-                k+=1
+            
+                verso=row[0]
+                recto=row[1]
+                label=row[2]
+                color=row[3]
+                data_file = row[4]
+                history_file = row[5]
+                info_frame =tk.Frame(root)
+                info_frame.grid(row= k, column=i, padx=20, pady=20 )
+                info_frame.config(bg='#050D54')
+                
+                fCard=Flashcard(label,recto,verso,color,data_file,history_file)
+                count = count+1
+                fcards[count] = fCard
+                #info_frame.config(bg=)
+                nb = fCard.get_nb_cards()
+                nb_passed = fCard.get_nb_passed()  
+                
+                button=Button(info_frame, text=row[2], font=("Courrier", 24),cursor='hand2', height=3, width=19, bg=row[3], fg='white', command=lambda count = count : fcards[count].show_window(create_new_window(root)))
+                button.grid(row=0, column=0, pady=0,  padx=0, columnspan=10, sticky="ne")
+                label = tk.Label(info_frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
+                label.grid(row=0, column=0, pady=10,  padx=10, columnspan=10, sticky="ne")
+                button11=Button(info_frame,image=image_ajout1,borderwidth=0, cursor='hand2', command=fCard.ajouter_carte)
+                button11.grid(pady=1, padx=1, row=2, column=3,sticky="w")
+                button12=Button(info_frame,image=image_ajout2,borderwidth=0, cursor='hand2', command=fCard.modifier_carte)
+                button12.grid(pady=1, padx=1, row=2, column=4, sticky="w")
+                button13=Button(info_frame,image=image_ajout3,borderwidth=0, cursor='hand2', command=fCard.dashboard)
+                button13.grid(pady=1, padx=1, row=2, column=5, sticky="w")
+                button14=Button(info_frame,image=image_ajout4,borderwidth=0, cursor='hand2', command=lambda: (run_game_script(data_file)))
+                button14.grid(pady=1, padx=1, row=2, column=6, sticky="w")
+                button15=Button(info_frame,image=image_ajout5,borderwidth=0, cursor='hand2', command=fCard.supprimer_carte)
+                button15.grid(pady=1, padx=1, row=2, column=7, sticky="w")
+                i+=1
+                if i%3==0:
+                    i=0
+                    k+=1
+                print(fcards)
 
 
 def run_game_script():
