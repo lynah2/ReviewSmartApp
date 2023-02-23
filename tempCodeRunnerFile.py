@@ -1,13 +1,2 @@
-
-                i+=1
-                if i%3==0:
-                    i=0
-                    k+=1
-                print(fcards)
-
-
-def run_game_script():
-    subprocess.call(["python", "hangman.py"])
-
-def add_button():
-    subprocess.call(["python", "ajoutCategorie.py"])
+button=Button(frame, text='frToEng', font=("Courrier", 25),bg='#FAD727' , fg='white', height=3, width=19,command=lambda :fCard.show_window(create_new_window(root)))
+bu

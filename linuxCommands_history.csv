@@ -7,3 +7,16 @@ remove,rm,2023-02-22
 write,echo,2023-02-12
 list,ls,2023-02-22
 copy,cp,2023-02-22
+cp,copy,2023-02-23
+echo,write,2023-02-23
+echo,write,2023-02-23
+cp,copy,2023-02-23
+echo,write,2023-02-23
+cp,copy,2023-02-23
+echo,write,2023-02-23
+cp,copy,2023-02-23
+echo,write,2023-02-23
+cp,copy,2023-02-23
+echo,write,2023-02-23
+cp,copy,2023-02-23
+cp,copy,2023-02-23
