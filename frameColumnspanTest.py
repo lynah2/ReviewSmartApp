@@ -5,6 +5,7 @@ import subprocess
 import csv
 from Flashcard import Flashcard
 
+
 BACKGROUND_COLOR = "#B1DDC6"
 
 k=1
@@ -21,7 +22,8 @@ def add_frames_from_csv(root):
         reader = csv.reader(f)
         i=1
         global k
-        #self.tk
+        commands=[]
+        
         for row in reader:
             if len(row)>0:
               verso=row[0]
@@ -35,10 +37,14 @@ def add_frames_from_csv(root):
               info_frame.config(bg='#050D54')
               
               fCard=Flashcard(label,recto,verso,color,data_file,history_file)
-              print(fCard)
-
-              button=Button(info_frame, text=row[2], font=("Courrier", 25),cursor='hand2', height=3, width=19, bg=row[3], fg='white', command=lambda: [fCard.show_window(create_new_window(root))])
+              #info_frame.config(bg=)
+              nb = fCard.get_nb_cards()
+              nb_passed = fCard.get_nb_passed()
+              #commands.append(fCard.show_window(create_new_window(root)))
+              button=Button(info_frame, text=row[2], font=("Courrier", 24),cursor='hand2', height=3, width=19, bg=row[3], fg='white', command=lambda: [fCard.show_window(create_new_window(root))])
               button.grid(row=0, column=0, pady=0,  padx=0, columnspan=10, sticky="ne")
+              label = tk.Label(info_frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
+              label.grid(row=0, column=0, pady=10,  padx=10, columnspan=10, sticky="ne")
               button11=Button(info_frame,image=image_ajout1,borderwidth=0, cursor='hand2', command=fCard.ajouter_carte)
               button11.grid(pady=1, padx=1, row=2, column=3,sticky="w")
               button12=Button(info_frame,image=image_ajout2,borderwidth=0, cursor='hand2', command=fCard.modifier_carte)

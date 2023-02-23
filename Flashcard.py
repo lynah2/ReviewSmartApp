@@ -6,11 +6,12 @@ from supermemo2 import SMTwo
 import random
 from tkinter import *
 from tkinter import ttk
-import tkinter
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from collections import Counter
 import csv
+import os
+
 
 
 BACKGROUND_COLOR = "#B1DDC6"
@@ -88,7 +89,14 @@ class Flashcard:
         self.to_learn = [x for x in self.cards if x not in self.Today]
         print(len(self.to_learn))
         
-        
+    def get_nb_cards(self):
+        return len(self.data)
+
+    def get_nb_passed(self):
+        return len(self.data[self.data['responseQuality'] >= 3])
+
+    def get_color(self):
+        return self.color
 
     def flip_card(self):
         
@@ -442,7 +450,7 @@ class Flashcard:
         # Create the main window
         root = Tk()
         root.title("Flashcard App - Modification")
-        root.geometry("500x600")
+        #root.geometry("300x600")
 
         # Define the colors list
         colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink", "brown", "gray", "black"]
@@ -451,73 +459,107 @@ class Flashcard:
 
         # Create a frame to hold the three sections
         sections_frame = Frame(root)
-        sections_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        sections_frame.pack(fill="both", expand=True, padx=10, pady=4)
 
         # Create the first section with a label, combobox, and button
         section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
-        section1_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section1_frame.pack(fill="both", expand=True, padx=10, pady=4)
         section1_label = Label(section1_frame, text="Modification du nom de la Flashcard")
-        section1_label.pack(padx=10, pady=10)
+        section1_label.pack(padx=10, pady=4)
         section1_label1 = Label(section1_frame, text="Veuillez entrer le nouveau nom")
-        section1_label1.pack(padx=10, pady=10)
+        section1_label1.pack(padx=10, pady=4)
         section1_entry = Entry(section1_frame)
-        section1_entry.pack(padx=10, pady=10)
-        section1_button = Button(section1_frame, text="Changer nom"""", command=lambda: (self.change_title(section1_label1.get()), root.destroy())""")
-        section1_button.pack(padx=10, pady=10)
+        section1_entry.pack(padx=10, pady=4)
+        section1_button = Button(section1_frame, text="Changer nom", command=lambda: (self.change_title(section1_entry.get()), section1_result_label.config(text="Nom changé avec succès !")))
+        section1_button.pack(padx=10, pady=4)
+        section1_result_label = Label(section1_frame, text="")
+        section1_result_label.pack(padx=10, pady=4)
+
 
         # Create the second section with a label, combobox, and button
         section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
-        section2_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
         section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard")
-        section2_label.pack(padx=10, pady=10)
+        section2_label.pack(padx=10, pady=4)
         section2_label1 = Label(section2_frame, text="Veuillez choisir la nouvelle couleur")
-        section2_label1.pack(padx=10, pady=10)
+        section2_label1.pack(padx=10, pady=4)
         section2_combobox = ttk.Combobox(section2_frame, values=colors)
-        section2_combobox.pack(padx=10, pady=10)
-        section2_button = Button(section2_frame, text="Changer couleur")
-        section2_button.pack(padx=10, pady=10)
+        section2_combobox.pack(padx=10, pady=4)
+        section2_button = Button(section2_frame, text="Changer couleur", command=lambda: (self.change_color(section2_combobox.get()), section2_result_label.config(text="Couleur changée avec succès !")))
+        section2_button.pack(padx=10, pady=4)
+        section2_result_label = Label(section2_frame, text="")
+        section2_result_label.pack(padx=10, pady=4)
+
+        cartes = self.data.iloc[:, 0].tolist()
 
         # Create the third section with a label, combobox, and button
         section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
-        section3_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        section3_frame.pack(fill="both", expand=True, padx=10, pady=4)
         section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard")
-        section3_label.pack(padx=10, pady=10)
+        section3_label.pack(padx=10, pady=4)
         section3_label1 = Label(section3_frame, text="Veuillez choisir la carte à changer")
-        section3_label1.pack(padx=10, pady=10)
-        section3_entry = Entry(section3_frame)
-        section3_entry.pack(padx=10, pady=10)
-        section3_button = Button(section3_frame, text="Changer carte", command=self.change_card)
-        section3_button.pack(padx=10, pady=10)
+        section3_label1.pack(padx=10, pady=4)
+        section3_combobox = ttk.Combobox(section3_frame, values=cartes)
+        section3_combobox.pack(padx=10, pady=4)
+        section3_label2 = Label(section3_frame, text="Veuillez entrer le recto de la carte à changer")
+        section3_label2.pack(padx=10, pady=4)
+        section3_entry1 = Entry(section3_frame)
+        section3_entry1.pack(padx=10, pady=4)
+        section3_label3 = Label(section3_frame, text="Veuillez entrer le verso de la carte à changer")
+        section3_label3.pack(padx=10, pady=4)
+        section3_entry2 = Entry(section3_frame)
+        section3_entry2.pack(padx=10, pady=4)
+        section3_button = Button(section3_frame, text="Changer carte", command=lambda: (self.change_card(section3_combobox.get(),section3_entry1.get(),section3_entry2.get()), section3_result_label.config(text="Carte changée avec succès !")))
+        section3_button.pack(padx=10, pady=4)
+        section3_result_label = Label(section3_frame, text="")
+        section3_result_label.pack(padx=10, pady=4)
 
         # Create an exit button
-        exit_button = Button(root, text="Exit", command=root.quit)
-        exit_button.pack(side="bottom", padx=10, pady=10)
+        exit_button = Button(root, text="Exit", command=root.destroy)
+        exit_button.pack(side="bottom", padx=10, pady=4)
 
         # Start the main event loop
         root.mainloop()
 
+
+
     def change_title(self,new_title):
-        title = self.label
-        with open("flashcards.csv", mode='r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            header = next(reader)  # read the header row
-            rows = list(reader)  # read the remaining rows
+        if new_title != '':
+            title = self.label
+            with open("flashcards.csv", mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                rows = list(reader)  # read the remaining rows
+            with open("flashcards.csv", mode='w', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                # Loop through each row in the CSV file
+                for row in rows:
+                    if row[2] == title:
+                        row[2] = new_title
+                        os.rename(row[4], new_title+'.csv')
+                        row[4] = new_title+'.csv'
+                        os.rename(row[5], new_title+'_history.csv')
+                        row[5] = new_title+'_history.csv'
+                    # Write the updated row to the new CSV file
+                    print(row)
+                    writer.writerow(row)
 
-        with open("flashcards.csv", mode='w', newline='') as csv_file:
-            writer = csv.writer(csv_file)
-
-            # Write the header row
-            writer.writerow(header)
-
-            # Loop through each row in the CSV file
-            for row in rows:
-                if row[2] == title:
-                    # This row corresponds to the flashcard with the specified recto value
-                    # Replace the values in this row with the new values
-                    row[2] = new_title
-
-                # Write the updated row to the new CSV file
-                writer.writerow(row)
+    def change_color(self,new_color):
+        if new_color != '':
+            color = self.color
+            with open("flashcards.csv", mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                rows = list(reader)  # read the remaining rows
+            with open("flashcards.csv", mode='w', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                # Loop through each row in the CSV file
+                for row in rows:
+                    print(row)
+                    if row[3] == color:
+                        row[3] = new_color
+                        
+                    # Write the updated row to the new CSV file
+                    print(row)
+                    writer.writerow(row)
 
     def change_card(self,recto,new_recto,new_verso):
 
@@ -548,13 +590,14 @@ class Flashcard:
         root = Tk()
         root.title("Supprimer carte")
         root.geometry("700x250")
-
-        label1 = Label(root, text="Entrez la valeur recto de la carte que vous voulez supprimer:")
+        cartes = self.data.iloc[:, 0].tolist()
+        label1 = Label(root, text="Veuillez choisir la valeur recto de la carte que vous voulez supprimer:")
         label1.pack()
-        recto = Entry(root)
-        recto.pack()
-
-        submit_button = Button(root, text="Submit", command=lambda: (self.remove_card(recto.get()), root.destroy()))
+        recto = ttk.Combobox(root,values=cartes)
+        recto.pack(padx=10, pady=4)
+        result_label = Label(root, text="")
+        result_label.pack(padx=10, pady=4)
+        submit_button = Button(root, text="Submit", command=lambda: (self.remove_card(recto.get()),result_label.config(text="Carte supprimée avec succès !"), root.destroy()))
         submit_button.pack()
         root.mainloop()
 
@@ -588,119 +631,117 @@ class Flashcard:
                 # Write the row to the new CSV file
                 writer.writerow(row)
 
-    def hangman(self):
-        score = 0
-        run = True
+    # def hangman(self):
+    #     score = 0
+    #     run = True
 
-        # main loop
-        while run:
-            root = Tk()
-            root.geometry('905x600')
-            root.title('HANG MAN')
-            root.config(bg = '#E7FFFF')
-            count = 0
-            win_count = 0
+    #     # main loop
+    #     while run:
+    #         root = Tk()
+    #         root.geometry('905x600')
+    #         root.title('HANG MAN')
+    #         root.config(bg = '#E7FFFF')
+    #         count = 0
+    #         win_count = 0
 
-            # choosing word
-            with open(self.data_file) as f:
-                l= csv.reader(f)
-                rows = list(l)
-                random_row = random.choice(rows)
-                selected_word=random_row[1]
-                toGuess=random_row[0]
+    #         # choosing word
+    #         with open(self.data_file) as f:
+    #             l= csv.reader(f)
+    #             rows = list(l)
+    #             random_row = random.choice(rows)
+    #             selected_word=random_row[1]
+    #             toGuess=random_row[0]
             
             
-            # creation of word dashes variables
-            x = 250
-            for i in range(0,len(selected_word)):
-                x += 60
-                exec('d{}=Label(root,text="_",bg="#E7FFFF",font=("arial",20))'.format(i))
-                exec('d{}.place(x={},y={})'.format(i,x,350))
+    #         # creation of word dashes variables
+    #         x = 250
+    #         for i in range(0,len(selected_word)):
+    #             x += 60
+    #             exec('d{}=Label(root,text="_",bg="#E7FFFF",font=("arial",20))'.format(i))
+    #             exec('d{}.place(x={},y={})'.format(i,x,350))
                 
-            #letters icon
-            al = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-            for let in al:
-                exec('{}=PhotoImage(file="{}.png")'.format(let,let))
+    #         #letters icon
+    #         al = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+    #         for let in al:
+    #             exec('{}=PhotoImage(file="{}.png")'.format(let,let))
                 
-            # hangman images
-            h123 = ['h1','h2','h3','h4','h5','h6','h7']
-            for hangman in h123:
-                exec('{}=PhotoImage(file="{}.png")'.format(hangman,hangman))
+    #         # hangman images
+    #         h123 = ['h1','h2','h3','h4','h5','h6','h7']
+    #         for hangman in h123:
+    #             exec('{}=PhotoImage(file="{}.png")'.format(hangman,hangman))
                 
-            #letters placement
-            button = [['b1','a',0,470],['b2','b',70,470],['b3','c',140,470],['b4','d',210,470],['b5','e',280,470],['b6','f',350,470],['b7','g',420,470],['b8','h',490,470],['b9','i',560,470],['b10','j',630,470],['b11','k',700,470],['b12','l',770,470],['b13','m',840,470],['b14','n',0,530],['b15','o',70,530],['b16','p',140,530],['b17','q',210,530],['b18','r',280,530],['b19','s',350,530],['b20','t',420,530],['b21','u',490,530],['b22','v',560,530],['b23','w',630,530],['b24','x',700,530],['b25','y',770,530],['b26','z',840,530]]
+    #         #letters placement
+    #         button = [['b1','a',0,470],['b2','b',70,470],['b3','c',140,470],['b4','d',210,470],['b5','e',280,470],['b6','f',350,470],['b7','g',420,470],['b8','h',490,470],['b9','i',560,470],['b10','j',630,470],['b11','k',700,470],['b12','l',770,470],['b13','m',840,470],['b14','n',0,530],['b15','o',70,530],['b16','p',140,530],['b17','q',210,530],['b18','r',280,530],['b19','s',350,530],['b20','t',420,530],['b21','u',490,530],['b22','v',560,530],['b23','w',630,530],['b24','x',700,530],['b25','y',770,530],['b26','z',840,530]]
 
-            for q1 in button:
-                exec('{}=Button(root,bd=0,command=lambda:check("{}","{}"),bg="#E7FFFF",activebackground="#E7FFFF",font=10,image={})'.format(q1[0],q1[1],q1[0],q1[1]))
-                exec('{}.place(x={},y={})'.format(q1[0],q1[2],q1[3]))
+    #         for q1 in button:
+    #             exec('{}=Button(root,bd=0,command=lambda:check("{}","{}"),bg="#E7FFFF",activebackground="#E7FFFF",font=10,image={})'.format(q1[0],q1[1],q1[0],q1[1]))
+    #             exec('{}.place(x={},y={})'.format(q1[0],q1[2],q1[3]))
                 
-            #hangman placement
-            han = [['c1','h1'],['c2','h2'],['c3','h3'],['c4','h4'],['c5','h5'],['c6','h6'],['c7','h7']]
-            for p1 in han:
-                exec('{}=Label(root,bg="#E7FFFF",image={})'.format(p1[0],p1[1]))
+    #         #hangman placement
+    #         han = [['c1','h1'],['c2','h2'],['c3','h3'],['c4','h4'],['c5','h5'],['c6','h6'],['c7','h7']]
+    #         for p1 in han:
+    #             exec('{}=Label(root,bg="#E7FFFF",image={})'.format(p1[0],p1[1]))
 
-            # placement of first hangman image
-            c1.place(x = 300,y =- 50)
+    #         # placement of first hangman image
+    #         c1.place(x = 300,y =- 50)
             
-            #exit button
-            def close():
-                global run
-                answer = messagebox.askyesno('ALERT','YOU WANT TO EXIT THE GAME?')
-                if answer == True:
-                    run = False
-                    root.destroy()
+    #         #exit button
+    #         def close():
+    #             global run
+    #             answer = messagebox.askyesno('ALERT','YOU WANT TO EXIT THE GAME?')
+    #             if answer == True:
+    #                 run = False
+    #                 root.destroy()
                     
-            e1 = PhotoImage(file = 'exit.png')
-            ex = Button(root,bd = 0,command = close,bg="#E7FFFF",activebackground = "#E7FFFF",font = 10,image = e1)
-            ex.place(x=770,y=10)
-            s2 = 'SCORE:'+str(score)
-            s1 = Label(root,text = s2,bg = "#E7FFFF",font = ("arial",25))
-            s1.place(x = 10,y = 10)
-            tentatives=str(6-count)
-            s3 = Label(root,text='-----------------------------\n Vous avez '+tentatives+' tentatives\n pour trouver l\'équivalent  \n du mot suivant: \n"'+toGuess+'"\n-----------------------------',
-                    bg = "black",
-                    fg="white",
-                    font = ("arial",25))
-            s3.place(x = 10,y = 100)
-            # button press check function
-            def check(letter,button):
-                global count,win_count,run,score
-                exec('{}.destroy()'.format(button))
-                if letter in selected_word:
-                    for i in range(0,len(selected_word)):
-                        if selected_word[i] == letter:
-                            win_count += 1
-                            exec('d{}.config(text="{}")'.format(i,letter.upper()))
-                    if win_count == len(selected_word):
-                        score += 1
-                        answer = messagebox.askyesno('GAME OVER','YOU WON!\nWANT TO PLAY AGAIN?')
-                        if answer == True:
-                            run = True
-                            root.destroy()   
-                        else:
-                            run = False
-                            root.destroy()
-                else:
-                    count += 1
-                    exec('c{}.destroy()'.format(count))
-                    exec('c{}.place(x={},y={})'.format(count+1,300,-50))
-                    if count == 6:
-                        answer = messagebox.askyesno('GAME OVER','YOU LOST!\nWANT TO PLAY AGAIN?')
-                        if answer == True:
-                            run = True
-                            score = 0
-                            root.destroy()
-                        else:
-                            run = False
-                            root.destroy()         
-            root.mainloop()
+    #         e1 = PhotoImage(file = 'exit.png')
+    #         ex = Button(root,bd = 0,command = close,bg="#E7FFFF",activebackground = "#E7FFFF",font = 10,image = e1)
+    #         ex.place(x=770,y=10)
+    #         s2 = 'SCORE:'+str(score)
+    #         s1 = Label(root,text = s2,bg = "#E7FFFF",font = ("arial",25))
+    #         s1.place(x = 10,y = 10)
+    #         tentatives=str(6-count)
+    #         s3 = Label(root,text='-----------------------------\n Vous avez '+tentatives+' tentatives\n pour trouver l\'équivalent  \n du mot suivant: \n"'+toGuess+'"\n-----------------------------',
+    #                 bg = "black",
+    #                 fg="white",
+    #                 font = ("arial",25))
+    #         s3.place(x = 10,y = 100)
+    #         # button press check function
+    #         def check(letter,button):
+    #             global count,win_count,run,score
+    #             exec('{}.destroy()'.format(button))
+    #             if letter in selected_word:
+    #                 for i in range(0,len(selected_word)):
+    #                     if selected_word[i] == letter:
+    #                         win_count += 1
+    #                         exec('d{}.config(text="{}")'.format(i,letter.upper()))
+    #                 if win_count == len(selected_word):
+    #                     score += 1
+    #                     answer = messagebox.askyesno('GAME OVER','YOU WON!\nWANT TO PLAY AGAIN?')
+    #                     if answer == True:
+    #                         run = True
+    #                         root.destroy()   
+    #                     else:
+    #                         run = False
+    #                         root.destroy()
+    #             else:
+    #                 count += 1
+    #                 exec('c{}.destroy()'.format(count))
+    #                 exec('c{}.place(x={},y={})'.format(count+1,300,-50))
+    #                 if count == 6:
+    #                     answer = messagebox.askyesno('GAME OVER','YOU LOST!\nWANT TO PLAY AGAIN?')
+    #                     if answer == True:
+    #                         run = True
+    #                         score = 0
+    #                         root.destroy()
+    #                     else:
+    #                         run = False
+    #                         root.destroy()         
+    #         root.mainloop()
 
 
 
     @staticmethod
     def calculate_responseQuality(correct, repetition):
-
-
         if repetition != 0:
             res = correct / repetition
         else:

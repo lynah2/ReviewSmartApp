@@ -1,1 +1,1 @@
-#self.tk
+nb = fCard.get_nb_cards()
