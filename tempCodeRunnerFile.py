@@ -1,1 +1,1 @@
-nb = fCard.get_nb_cards()
+("Courrier", 8)

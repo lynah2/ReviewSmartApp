@@ -464,7 +464,7 @@ class Flashcard:
         # Create the first section with a label, combobox, and button
         section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section1_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section1_label = Label(section1_frame, text="Modification du nom de la Flashcard")
+        section1_label = Label(section1_frame, text="Modification du nom de la Flashcard",font=("Courrier", 10))
         section1_label.pack(padx=10, pady=4)
         section1_label1 = Label(section1_frame, text="Veuillez entrer le nouveau nom")
         section1_label1.pack(padx=10, pady=4)
@@ -479,7 +479,7 @@ class Flashcard:
         # Create the second section with a label, combobox, and button
         section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard")
+        section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard",font=("Courrier", 10))
         section2_label.pack(padx=10, pady=4)
         section2_label1 = Label(section2_frame, text="Veuillez choisir la nouvelle couleur")
         section2_label1.pack(padx=10, pady=4)
@@ -495,7 +495,7 @@ class Flashcard:
         # Create the third section with a label, combobox, and button
         section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section3_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard")
+        section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard",font=("Courrier", 10))
         section3_label.pack(padx=10, pady=4)
         section3_label1 = Label(section3_frame, text="Veuillez choisir la carte à changer")
         section3_label1.pack(padx=10, pady=4)
