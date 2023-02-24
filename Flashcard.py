@@ -119,7 +119,7 @@ class Flashcard:
         self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'repetition'] += 1  
         
         response_quality = self.calculate_responseQuality(self.current_card['correct'], self.current_card['repetition']+1)
-        self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'responseQuality'] = response_quality
+        self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'responseQuality'] = int(response_quality)
         
         if self.current_card['repetition'] == 0:
             review = SMTwo.first_review(0,now)
@@ -209,7 +209,7 @@ class Flashcard:
         self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'correct'] += 1  
 
         response_quality = self.calculate_responseQuality(self.current_card['correct']+1, self.current_card['repetition']+1)
-        self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'responseQuality'] = response_quality
+        self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'responseQuality'] = int(response_quality)
         
         
         if self.current_card['repetition'] == 0:
@@ -363,7 +363,7 @@ class Flashcard:
             headers = next(plots)
             for row in plots:
                 try:
-                    value = row[column_index2]
+                    value = row[column_index2].strip()
                     value_counts2[value] += 1
                 except (IndexError, ValueError) as e:
                     print(f"Error: {e}")
@@ -373,6 +373,7 @@ class Flashcard:
     
 
         # plot the pie chart on the third subplot
+        
         ax2.pie(y2, labels=x2, autopct='%1.1f%%')
         ax2.set_title('Niveaux de maitrise')
         ax2.legend(title = "Niveaux:")
