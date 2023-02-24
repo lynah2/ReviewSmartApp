@@ -8,18 +8,20 @@ BACKGROUND_COLOR = "#050D54"
 
 
 def save_to_csv():
-    data = [rectoCarte_entry.get(), versoCarte_entry.get(), Categorie_entry.get(), Calor_combobox.get(),Categorie_entry.get()+'.csv']
-    with open('flashcards.csv', 'a', newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(data)
-    labels=[data[0],data[1]]
-    with open(Categorie_entry.get()+'.csv', 'a', newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(labels)
-    with open(Categorie_entry.get()+'_history.csv', 'a', newline="") as file:
-        writer = csv.writer(file)
-    window.destroy()
-    
+    data = [rectoCarte_entry.get(), versoCarte_entry.get(), Categorie_entry.get(), Calor_combobox.get(),Categorie_entry.get()+'.csv',Categorie_entry.get()+'_history.csv']
+    if not all(data):
+        window.destroy()
+    else:
+        with open('flashcards.csv', 'a', newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(data)
+        labels=[data[0],data[1]]
+        with open(Categorie_entry.get()+'.csv', 'a', newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(labels)
+        with open(Categorie_entry.get()+'_history.csv', 'a', newline="") as file:
+            writer = csv.writer(file)
+        window.destroy()
 
 window = tkinter.Tk()
 window.title("Flashcard App - Ajout d'une Nouvelle Flashcard")
@@ -49,18 +51,18 @@ versoCarte_entry = tkinter.Entry(user_info_frame)
 rectoCarte_entry.grid(row=1, column=1)
 versoCarte_entry.grid(row=1, column=2)
 
-colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink", "brown", "gray", "black", "white"]
+colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink", "brown", "gray", "black"]
 Calor_label = tkinter.Label(user_info_frame, text="Couleur",bg=BACKGROUND_COLOR,fg="white")
 Calor_combobox = ttk.Combobox(user_info_frame, values=colors)
 Calor_label.grid(row=2, column=0)
 Calor_combobox.grid(row=3, column=0)
-Calor_combobox.set("white")
+Calor_combobox.set("green")
 
 
 for widget in user_info_frame.winfo_children():
     widget.grid_configure(padx=10, pady=5)
 # Button
-button = tkinter.Button(frame, text="Ajouter", command= save_to_csv,bg=BACKGROUND_COLOR,fg="white")
+button = tkinter.Button(frame, text="Ajouter", command= save_to_csv,bg="orange",fg="white")
 button.grid(row=1, column=0, sticky="news", padx=20, pady=10)
 
 window.mainloop()

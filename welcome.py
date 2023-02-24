@@ -7,10 +7,10 @@ BACKGROUND_COLOR = "#050D54"
 
 def aide(root):
     sub_window = Toplevel(root)
-    sub_window.title("Flashcard App - Aide!")
+    sub_window.title("SmartReview - Aide!")
     sub_window.config(bg=BACKGROUND_COLOR)
     #sub_window.geometry("600x600")
-    label = Label(sub_window, text="Comment fonctionne notre application?",font=("Courrier", 28),bg=BACKGROUND_COLOR,fg="white")
+    label = Label(sub_window, text="Comment fonctionne notre application?",font=("Courrier", 28,"bold"),bg=BACKGROUND_COLOR,fg="orange")
     label.pack()
     # Create a frame to hold the three sections
     sections_frame = Frame(sub_window)
@@ -20,18 +20,18 @@ def aide(root):
     section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section1_frame.pack(fill="both", expand=True, padx=10, pady=4)
     
-    section1_label = Label(section1_frame, text="Objectif",font=("Courrier", 18), anchor="w",bg=BACKGROUND_COLOR,fg="white")
+    section1_label = Label(section1_frame, text="Objectif",font=("Courrier", 18,"bold"), anchor="w",bg=BACKGROUND_COLOR,fg="orange")
     section1_label.pack(padx=10, pady=4)
-    section1_label1 = Label(section1_frame, text="Notre application a pour objectif de faciliter la mémorisetion de nouvelles informations en se basant sur un système de répétition espacée (SPACED REPETITION).",bg=BACKGROUND_COLOR,fg="white")
+    section1_label1 = Label(section1_frame, text="Notre application a pour objectif de faciliter la mémorisetion de nouvelles informations\n en se basant sur un système de répétition espacée (SPACED REPETITION).",font=("Courrier", 18),bg=BACKGROUND_COLOR,fg="white")
     section1_label1.pack(padx=10, pady=4)
     section1_frame.config(bg=BACKGROUND_COLOR)
     # Create the second section with a label, combobox, and button
     section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
     
-    section2_label = Label(section2_frame, text="Comment procéder?",font=("Courrier", 18),bg=BACKGROUND_COLOR,fg="white")
+    section2_label = Label(section2_frame, text="Comment procéder?",font=("Courrier", 18,"bold"),bg=BACKGROUND_COLOR,fg="orange")
     section2_label.pack(padx=10, pady=4)
-    section2_label1 = Label(section2_frame, text="On vous propose une Flashcard pour apprendre l'Anglais, mais vous pouvez tous de même créer vos propres cartes personnalisés.",bg=BACKGROUND_COLOR,fg="white")
+    section2_label1 = Label(section2_frame, text="On vous propose une Flashcard pour apprendre l'Anglais, \nmais vous pouvez tous de même créer vos propres cartes personnalisées.",bg=BACKGROUND_COLOR,font=("Courrier", 18),fg="white")
     section2_label1.pack(padx=10, pady=4)
     section2_frame.config(bg=BACKGROUND_COLOR)
     
@@ -41,19 +41,19 @@ def aide(root):
     # Create the third section with a label, combobox, and button
     section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section3_frame.pack(fill="both", expand=True, padx=10, pady=4)
-    section3_label = Label(section3_frame, text="Evaluation",font=("Courrier", 18),bg=BACKGROUND_COLOR,fg="white")
+    section3_label = Label(section3_frame, text="Evaluation",font=("Courrier", 18,"bold"),bg=BACKGROUND_COLOR,fg="orange")
     section3_label.pack(padx=10, pady=4)
-    section3_label1 = Label(section3_frame, text="Pour permettre à l'utilisateur de mesurer sa progression, on propose un système d'évaluation comme suit:",bg=BACKGROUND_COLOR,fg="white")
+    section3_label1 = Label(section3_frame, text="Pour permettre à l'utilisateur de mesurer sa progression, on propose un système d'évaluation comme suit:",bg=BACKGROUND_COLOR,fg="white",font=("Courrier", 18))
     section3_label1.pack(padx=10, pady=4)
     text = Text(section3_frame, state="disabled", height=8, width=80,bg=BACKGROUND_COLOR,fg="white")
     text.pack()
-    text.config(state="normal")
+    text.config(state="normal",font=("Courrier", 18))
     # Insert text with bullets
     text.insert(END, "\u2022 Niveau Maitrise 5: Vous connaissez la réponse sans hésitation.\n")
-    text.insert(END, "\u2022 Niveau Bon 4: Vous connaissez la réponse, mais cela prend un peu plus de temps pour se rappeler.\n")
-    text.insert(END, "\u2022 Niveau Pass 3: Vous êtes sur la bonne voie, mais vous avez besoin d'un indice pour vous rappeler de la réponse.\n")
+    text.insert(END, "\u2022 Niveau Bon 4: Vous connaissez la réponse, mais cela prend un peu plus de temps pour \nse rappeler.\n")
+    text.insert(END, "\u2022 Niveau Pass 3: Vous êtes sur la bonne voie, mais vous avez besoin d'un indice pour \nvous rappeler de la réponse.\n")
     text.insert(END, "\u2022 Niveau Fail 2: Vous avez du mal à vous rappeler de la réponse\n")
-    text.insert(END, "\u2022 Niveau Médiocre 1:  Vous ne connaissez pas la réponse du tout et vous devez réviser la carte plus souvent.\n")
+    text.insert(END, "\u2022 Niveau Médiocre 1:  Vous ne connaissez pas la réponse du tout et vous devez réviser la carte \nplus souvent.\n")
 
     # Set state back to "disabled" to prevent user editing
     text.config(state="disabled")
@@ -63,7 +63,7 @@ def aide(root):
     
 
     # Create an exit button
-    exit_button = Button(sub_window, text="Exit", command=sub_window.destroy)
+    exit_button = Button(sub_window, text="Exit", bg="orange",fg="white",font=("Courrier", 18),command=sub_window.destroy)
     exit_button.pack(side="bottom", padx=10, pady=4)
 
 

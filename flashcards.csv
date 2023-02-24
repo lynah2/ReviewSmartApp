@@ -1,2 +1,3 @@
-Name,Symbol,periodicTable,brown,periodicTable.csv,periodicTable_history.csv
-French,German,germanWeekDays,blue,germanWeekDays.csv,germanWeekDays_history.csv,,,white,.csv
+French,English,frToEng,orange,frToEng.csv,frToEng_history.csv
+Name,Symbol,periodicTable,gray,periodicTable.csv,periodicTable_history.csv
+French,German,germanWeekDays,blue,germanWeekDays.csv,germanWeekDays_history.csv

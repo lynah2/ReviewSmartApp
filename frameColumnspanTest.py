@@ -11,7 +11,7 @@ k=1
 m=k+2
 def create_new_window(root):
     window = Toplevel(root)
-    window.title("Flashcard app")
+    window.title("SmartReview")
     window.config(background=BACKGROUND_COLOR)
     return window
     
@@ -19,13 +19,12 @@ def add_frames_from_csv(root):
     
     with open("flashcards.csv") as f:
         reader = csv.reader(f)
-        i=1
+        i=0
         count = 0
         global k
         fcards = {}
         for row in reader:
             if len(row)>0:
-
                 verso=row[0]
                 recto=row[1]
                 label=row[2]
@@ -43,6 +42,7 @@ def add_frames_from_csv(root):
                 nb = fCard.get_nb_cards()
                 nb_passed = fCard.get_nb_passed()
 
+                
                 button=Button(info_frame, text=row[2], font=("Courrier", 25),cursor='hand2', height=4, width=19, bg=row[3], fg='white', command=lambda count = count : fcards[count].show_window(create_new_window(root)))
                 button.grid(row=0, column=0, pady=0,  padx=2, columnspan=10, sticky="ne")
                 label = tk.Label(info_frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
@@ -62,13 +62,38 @@ def add_frames_from_csv(root):
                     i=0
                     k+=1
 
+def modify_card_and_reload(fCard):
+    fCard.modifier_carte()
+    reload_frames()
 
 def run_game_script():
     subprocess.call(["python", "hangman.py"])
 
 def add_button():
     subprocess.call(["python", "ajoutCategorie.py"])
+    children = frame1.winfo_children()
+    for i, widget in enumerate(children):
+        if i > 1:  # skip the first two widgets
+            widget.destroy()
+    
+    add_frames_from_csv(frame1)
+    reload_frames()
+    #image_ajout=PhotoImage(file="images/add.png")
+    # button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
+    # button.config()
+    # button.grid(pady=0, padx=10, row=k+2, column=2)
 
+def reload_frames():
+    children = frame1.winfo_children()
+    for i, widget in enumerate(children):
+        if i > 1:  # skip the first two widgets
+            widget.destroy()
+    image_ajout=PhotoImage(file="images/add.png")
+    button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
+    button.config()
+    button.grid(pady=0, padx=10, row=k+2, column=2)
+    add_frames_from_csv(frame1)
+    
 
 root=Tk()
 root.title('SmartReview')
@@ -113,13 +138,13 @@ frame = tk.Frame(frame1)
 frame.config(bg='#050D54')
 frame.grid(row=1, column=0,padx=20,pady=0)
 
-fCard=Flashcard('frToEng','English','French','yellow','frToEng.csv','frToEng_history.csv')
-nb = fCard.get_nb_cards()
-nb_passed = fCard.get_nb_passed() 
-button=Button(frame, text='frToEng', font=("Courrier", 25),bg='yellow' , fg='white', height=4, width=19,command=lambda :fCard.show_window(create_new_window(root)))
-button.grid(row=1, column=0, pady=0, padx=10, columnspan=10, sticky="ne")
-label = tk.Label(frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
-label.grid(row=1, column=0, pady=10,  padx=15, columnspan=10, sticky="ne")
+# fCard=Flashcard('frToEng','English','French','orange','frToEng.csv','frToEng_history.csv')
+# nb = fCard.get_nb_cards()
+# nb_passed = fCard.get_nb_passed() 
+# button=Button(frame, text='frToEng', font=("Courrier", 25),bg='orange' , fg='white', height=4, width=19,command=lambda :fCard.show_window(create_new_window(root)))
+# button.grid(row=1, column=0, pady=0, padx=10, columnspan=10, sticky="ne")
+# label = tk.Label(frame, text=str(nb_passed)+"/"+str(nb), font=("Courrier", 8), bg=fCard.get_color())
+# label.grid(row=1, column=0, pady=10,  padx=15, columnspan=10, sticky="ne")
 
 
 image_ajout1=PhotoImage(file="images/addCard.png")
@@ -128,16 +153,16 @@ image_ajout3=PhotoImage(file="images/graph.png")
 image_ajout4=PhotoImage(file="images/game.png")
 image_ajout5=PhotoImage(file="images/trash.png")
 
-button6=Button(frame,image=image_ajout1,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.ajouter_carte)
-button6.grid(pady=5, padx=0, row=2, column=3,sticky="w")
-button7=Button(frame,image=image_ajout2,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.modifier_carte)
-button7.grid(pady=1, padx=0, row=2, column=4, sticky="w")
-button8=Button(frame,image=image_ajout3,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.dashboard)
-button8.grid(pady=1, padx=0, row=2, column=5, sticky="w")
-button9=Button(frame,image=image_ajout4,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.playHangMan)
-button9.grid(pady=1, padx=0, row=2, column=6, sticky="w")
-#button10=Button(frame,image=image_ajout5,borderwidth=0, highlightthickness=0,  relief="flat", cursor='hand2')
-#button10.grid(pady=1, padx=0, row=2, column=7, sticky="w")
+# button6=Button(frame,image=image_ajout1,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.ajouter_carte)
+# button6.grid(pady=5, padx=0, row=2, column=3,sticky="w")
+# button7=Button(frame,image=image_ajout2,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.modifier_carte)
+# button7.grid(pady=1, padx=0, row=2, column=4, sticky="w")
+# button8=Button(frame,image=image_ajout3,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.dashboard)
+# button8.grid(pady=1, padx=0, row=2, column=5, sticky="w")
+# button9=Button(frame,image=image_ajout4,borderwidth=0,highlightthickness=0, cursor='hand2',command=fCard.playHangMan)
+# button9.grid(pady=1, padx=0, row=2, column=6, sticky="w")
+# #button10=Button(frame,image=image_ajout5,borderwidth=0, highlightthickness=0,  relief="flat", cursor='hand2')
+# #button10.grid(pady=1, padx=0, row=2, column=7, sticky="w")
 
 add_frames_from_csv(frame1)
 
@@ -145,7 +170,7 @@ image_ajout=PhotoImage(file="images/add.png")
 #image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
 button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
 button.config()
-button.grid(pady=0, padx=10, row=3, column=2)
+button.grid(pady=0, padx=10, row=k+1, column=2)
 #output_button = Button(root, text="Return Output", command=return_output)
 #output_button.grid(row=2, column=0)
 
