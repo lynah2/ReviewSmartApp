@@ -14,7 +14,6 @@ import os
 from Hangman import HangMan
 
 
-
 BACKGROUND_COLOR = "#050D54"
 
 class Flashcard:
@@ -65,15 +64,6 @@ class Flashcard:
         if 'nextTime' not in self.data.columns:   #updated in next_card assuming user got it wrong then update in is_known if known
             self.data['nextTime'] = now 
 
-        if 'easiness' not in self.data.columns:   #updated by review
-            self.data['easiness'] = 1
-
-        if 'interval' not in self.data.columns:   #updated by review
-            self.data['interval'] = 1
-
-        if 'repetitions_rev' not in self.data.columns:   #updated by review
-            self.data['repetitions_rev'] = 0
-
         if 'responseQuality' not in self.data.columns:   #updated in next_card assuming user got it wrong then update in is_known if known
             self.data['responseQuality'] = 0
         self.data['responseQuality'] = self.data['responseQuality'].fillna(0).astype(int)
@@ -122,22 +112,13 @@ class Flashcard:
         self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'responseQuality'] = int(response_quality)
         
         if self.current_card['repetition'] == 0:
-            review = SMTwo.first_review(0,now)
 
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = review.review_date
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'interval'] = review.interval
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'easiness'] = review.easiness
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'repetitions_rev'] = review.repetitions
+            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = self.supermemo(0,0)
         else:
-            easiness = float(self.current_card['easiness'])
-            interval = int(self.current_card['interval'])
-            repetitions = int(self.current_card['repetitions_rev'])
-            review = SMTwo(easiness, interval, repetitions).review(response_quality, self.current_card['nextTime'])
+            repetitions = int(self.current_card['repetition'])
             
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = review.review_date
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'interval'] = review.interval
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'easiness'] = review.easiness
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'repetitions_rev'] = review.repetitions
+            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = self.supermemo(response_quality,repetitions)
+
         
         # Write the DataFrame back to the file
         self.data.to_csv(self.data_file, index=False)
@@ -213,23 +194,12 @@ class Flashcard:
         
         
         if self.current_card['repetition'] == 0:
-            review = SMTwo.first_review(5,now)
 
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = review.review_date
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'interval'] = review.interval
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'easiness'] = review.easiness
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'repetitions_rev'] = review.repetitions
+            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = self.supermemo(5,0)
         else:
-            easiness = float(self.current_card['easiness'])
-            interval = int(self.current_card['interval'])
-            repetitions = int(self.current_card['repetitions_rev'])
-            review = SMTwo(easiness, interval, repetitions).review(response_quality, self.current_card['nextTime'])
+            repetitions = int(self.current_card['repetition'])
             
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = review.review_date
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'interval'] = review.interval
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'easiness'] = review.easiness
-            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'repetitions_rev'] = review.repetitions
-
+            self.data.loc[self.data[self.recto] == self.current_card[self.recto], 'nextTime'] = self.supermemo(response_quality,repetitions)
         data.to_csv(self.data_file, index=False)
         # index = false discrads the index numbers
 
@@ -282,7 +252,7 @@ class Flashcard:
 
 
     def graph_level(self):
-        column_index = 9
+        column_index = 6
         x = []
         y = []
         value_counts = Counter()
@@ -353,7 +323,7 @@ class Flashcard:
         ax1.tick_params(axis='x', rotation=90)
 
         # plot the second graph on the second subplot
-        column_index2 = 9
+        column_index2 = 6
         x2 = []
         y2 = []
         value_counts2 = Counter()
@@ -761,12 +731,43 @@ class Flashcard:
             return 0
         else:   
             return 1 
+    
+    @staticmethod
+    def supermemo(q, n):
+        """
+        SuperMemo 2 algorithm for scheduling spaced repetition of learning material.
+        
+        Parameters:
+            q (int): quality of response (0-5)
+            n (int): repetition number
+            
+        Returns:
+            next review date
+        """
+        n += 1
+        if q > 3:
+            interval = {
+                0: 1,
+                1: 7,
+                2: 30,
+                3: 60,
+                4: 80,
+                5: 100
+            }.get(n, 100)
+        else:
+            interval = 1
 
+
+        next_review = datetime.date.today() + datetime.timedelta(days=interval)
+        return next_review
 
 
  # create instance d'objet Flashcard
+# fenetre = Tk()
+# fenetre.title("Flashcard app")
 # flashcard_fr_eng = Flashcard('frToEng','English','French',"white",'frToEng.csv','frToEng_history.csv')
+# flashcard_fr_eng.show_window(fenetre)
 # # flashcard_fr_eng.supprimer_carte()
-# flashcard_fr_eng.show_window()
+
 
         

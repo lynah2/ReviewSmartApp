@@ -1,8 +1,8 @@
-French,German,correct,repetition,lastRevised,nextTime,easiness,interval,repetitions_rev,responseQuality
-lundi,Montag,7,13,2023-02-23,2023-03-07,1.3,1,1,3
-mardi,Dienstag,8,16,2023-02-23,2023-03-09,1.3,1,0,2
-Mercredi,Mittwoch,10,15,2023-02-23,2023-04-12,1.3,15,5,3
-Jeudi,Donnerstag,7,17,2023-02-23,2023-03-11,1.3,1,0,2
-Vendredi,Freitay,10,18,2023-02-23,2023-05-10,1.3,6,2,3
-Samedi,Samstag,7,14,2023-02-23,2023-03-08,1.3,1,0,2
-Dimanche,Sonntag,8,15,2023-02-23,2023-03-20,1.3,8,3,3
+French,German,correct,repetition,lastRevised,nextTime,responseQuality
+lundi,Montag,3,6,2023-02-24,2023-02-25,2
+mardi,Dienstag,4,7,2023-02-24,2023-02-25,3
+Mercredi,Mittwoch,3,7,2023-02-24,2023-02-25,2
+Jeudi,Donnerstag,3,6,2023-02-24,2023-02-25,2
+Vendredi,Freitay,3,6,2023-02-24,2023-02-25,2
+Samedi,Samstag,3,7,2023-02-24,2023-02-25,2
+Dimanche,Sonntag,5,8,2023-02-24,2023-02-25,3
