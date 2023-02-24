@@ -290,9 +290,10 @@ class Flashcard:
         global root
         root = Tk()
         root.geometry("1250x650")
+        root.config(bg=BACKGROUND_COLOR)
 
         # create a label widget and pack it at the top of the window
-        label = Label(root, text="My Dashboard", font=("Arial", 24))
+        label = Label(root, text="My Dashboard", font=("Arial", 24),bg=BACKGROUND_COLOR,fg="white")
         label.pack(side="top", fill="x")
 
         # create a figure with three subplots
@@ -372,7 +373,7 @@ class Flashcard:
             percent_level_5 = round(percent_level_5, 1)
 
         # create a label widget for the statistic
-        stat_label = Label(root, text=f"Nombre \n total \n des cartes:\n{total_cards}\n\n --------------- \n \n Cartes \n maitrisees :\n{percent_level_5:.2f}%", font=("Arial", 12))
+        stat_label = Label(root, text=f"Nombre \n total \n des cartes:\n{total_cards}\n\n --------------- \n \n Cartes \n maitrisees :\n{percent_level_5:.2f}%", font=("Arial", 12),bg=BACKGROUND_COLOR,fg="white")
         stat_label.pack(side="right", padx=10, pady=20)
 
 
@@ -391,18 +392,19 @@ class Flashcard:
         root = Tk()
         root.title("Ajouter carte")
         root.geometry("700x250")
+        root.config(bg=BACKGROUND_COLOR)
 
-        label1 = Label(root, text="Enter value recto:")
+        label1 = Label(root, text="Veuillez entrer la valeur recto:",bg=BACKGROUND_COLOR,fg="white")
         label1.pack()
         recto = Entry(root)
         recto.pack()
 
-        label2 = Label(root, text="Enter value verso:")
+        label2 = Label(root, text="Veuillez entrer la valeur verso:",bg=BACKGROUND_COLOR,fg="white")
         label2.pack()
         verso = Entry(root)
         verso.pack()
 
-        submit_button = Button(root, text="Submit", command=lambda: (self.write_card(recto.get(), verso.get()), root.destroy()))
+        submit_button = Button(root, text="Ajouter carte", command=lambda: (self.write_card(recto.get(), verso.get()), root.destroy()),bg=BACKGROUND_COLOR,fg="white")
         submit_button.pack()
 
         root.mainloop()
@@ -423,6 +425,7 @@ class Flashcard:
         # Create the main window
         root = Tk()
         root.title("Flashcard App - Modification")
+        root.config(bg=BACKGROUND_COLOR)
         #root.geometry("300x600")
 
         # Define the colors list
@@ -433,62 +436,67 @@ class Flashcard:
         # Create a frame to hold the three sections
         sections_frame = Frame(root)
         sections_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        sections_frame.config(bg=BACKGROUND_COLOR)
 
         # Create the first section with a label, combobox, and button
         section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section1_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section1_label = Label(section1_frame, text="Modification du nom de la Flashcard",font=("Courrier", 10))
+        section1_label = Label(section1_frame, text="Modification du nom de la Flashcard",font=("Courrier", 10),bg=BACKGROUND_COLOR,fg="white")
         section1_label.pack(padx=10, pady=4)
-        section1_label1 = Label(section1_frame, text="Veuillez entrer le nouveau nom")
+        section1_label1 = Label(section1_frame, text="Veuillez entrer le nouveau nom",bg=BACKGROUND_COLOR,fg="white")
         section1_label1.pack(padx=10, pady=4)
         section1_entry = Entry(section1_frame)
         section1_entry.pack(padx=10, pady=4)
-        section1_button = Button(section1_frame, text="Changer nom", command=lambda: (self.change_title(section1_entry.get()), section1_result_label.config(text="Nom changé avec succès !")))
+        section1_button = Button(section1_frame, text="Changer nom", command=lambda: (self.change_title(section1_entry.get()), section1_result_label.config(text="Nom changé avec succès !")),bg=BACKGROUND_COLOR,fg="white")
         section1_button.pack(padx=10, pady=4)
-        section1_result_label = Label(section1_frame, text="")
+        section1_result_label = Label(section1_frame, text="",bg=BACKGROUND_COLOR,fg="white")
         section1_result_label.pack(padx=10, pady=10)
+        section1_frame.config(bg=BACKGROUND_COLOR)
 
 
         # Create the second section with a label, combobox, and button
         section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard",font=("Courrier", 10))
+        section2_label = Label(section2_frame, text="Modification de la couleur de la Flashcard",font=("Courrier", 10),bg=BACKGROUND_COLOR,fg="white")
         section2_label.pack(padx=10, pady=4)
-        section2_label1 = Label(section2_frame, text="Veuillez choisir la nouvelle couleur")
+        section2_label1 = Label(section2_frame, text="Veuillez choisir la nouvelle couleur",bg=BACKGROUND_COLOR,fg="white")
         section2_label1.pack(padx=10, pady=4)
         section2_combobox = ttk.Combobox(section2_frame, values=colors)
         section2_combobox.pack(padx=10, pady=4)
-        section2_button = Button(section2_frame, text="Changer couleur", command=lambda: (self.change_color(section2_combobox.get()), section2_result_label.config(text="Couleur changée avec succès !")))
+        section2_button = Button(section2_frame, text="Changer couleur", command=lambda: (self.change_color(section2_combobox.get()), section2_result_label.config(text="Couleur changée avec succès !")),bg=BACKGROUND_COLOR,fg="white")
         section2_button.pack(padx=10, pady=4)
-        section2_result_label = Label(section2_frame, text="")
+        section2_result_label = Label(section2_frame, text="",bg=BACKGROUND_COLOR,fg="white")
         section2_result_label.pack(padx=10, pady=4)
+
+        section2_frame.config(bg=BACKGROUND_COLOR)
 
         cartes = self.data.iloc[:, 0].tolist()
 
         # Create the third section with a label, combobox, and button
         section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
         section3_frame.pack(fill="both", expand=True, padx=10, pady=4)
-        section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard",font=("Courrier", 10))
+        section3_label = Label(section3_frame, text="Modification d'une carte de la Flashcard",font=("Courrier", 10),bg=BACKGROUND_COLOR,fg="white")
         section3_label.pack(padx=10, pady=4)
-        section3_label1 = Label(section3_frame, text="Veuillez choisir la carte à changer")
+        section3_label1 = Label(section3_frame, text="Veuillez choisir la carte à changer",bg=BACKGROUND_COLOR,fg="white")
         section3_label1.pack(padx=10, pady=4)
         section3_combobox = ttk.Combobox(section3_frame, values=cartes)
         section3_combobox.pack(padx=10, pady=4)
-        section3_label2 = Label(section3_frame, text="Veuillez entrer le recto de la carte à changer")
+        section3_label2 = Label(section3_frame, text="Veuillez entrer le recto de la carte à changer",bg=BACKGROUND_COLOR,fg="white")
         section3_label2.pack(padx=10, pady=4)
         section3_entry1 = Entry(section3_frame)
         section3_entry1.pack(padx=10, pady=4)
-        section3_label3 = Label(section3_frame, text="Veuillez entrer le verso de la carte à changer")
+        section3_label3 = Label(section3_frame, text="Veuillez entrer le verso de la carte à changer",bg=BACKGROUND_COLOR,fg="white")
         section3_label3.pack(padx=10, pady=4)
         section3_entry2 = Entry(section3_frame)
         section3_entry2.pack(padx=10, pady=4)
-        section3_button = Button(section3_frame, text="Changer carte", command=lambda: (self.change_card(section3_combobox.get(),section3_entry1.get(),section3_entry2.get()), section3_result_label.config(text="Carte changée avec succès !")))
+        section3_button = Button(section3_frame, text="Changer carte", command=lambda: (self.change_card(section3_combobox.get(),section3_entry1.get(),section3_entry2.get()), section3_result_label.config(text="Carte changée avec succès !")),bg=BACKGROUND_COLOR,fg="white")
         section3_button.pack(padx=10, pady=4)
-        section3_result_label = Label(section3_frame, text="")
+        section3_result_label = Label(section3_frame, text="",bg=BACKGROUND_COLOR,fg="white")
         section3_result_label.pack(padx=10, pady=4)
 
+        section3_frame.config(bg=BACKGROUND_COLOR)
         # Create an exit button
-        exit_button = Button(root, text="Exit", command=root.destroy)
+        exit_button = Button(root, text="Exit", command=root.destroy,bg=BACKGROUND_COLOR,fg="white")
         exit_button.pack(side="bottom", padx=10, pady=4)
 
         # Start the main event loop
@@ -563,14 +571,16 @@ class Flashcard:
         root = Tk()
         root.title("Supprimer carte")
         root.geometry("700x250")
+        root.config(bg=BACKGROUND_COLOR)
+
         cartes = self.data.iloc[:, 0].tolist()
-        label1 = Label(root, text="Veuillez choisir la valeur recto de la carte que vous voulez supprimer:")
+        label1 = Label(root, text="Veuillez choisir la valeur recto de la carte que vous voulez supprimer:",bg=BACKGROUND_COLOR,fg="white")
         label1.pack()
         recto = ttk.Combobox(root,values=cartes)
-        recto.pack(padx=10, pady=4)
-        result_label = Label(root, text="")
+        recto.pack(padx=10, pady=10)
+        result_label = Label(root, text="",bg=BACKGROUND_COLOR,fg="white")
         result_label.pack(padx=10, pady=4)
-        submit_button = Button(root, text="Submit", command=lambda: (self.remove_card(recto.get()),result_label.config(text="Carte supprimée avec succès !"), root.destroy()))
+        submit_button = Button(root, text="Submit", command=lambda: (self.remove_card(recto.get()),result_label.config(text="Carte supprimée avec succès !"), root.destroy()),bg=BACKGROUND_COLOR,fg="white")
         submit_button.pack()
         root.mainloop()
 

@@ -2,31 +2,38 @@ from tkinter import *
 from PIL import Image, ImageTk
 import subprocess
 
+BACKGROUND_COLOR = "#050D54"
+
+
 def aide(root):
     sub_window = Toplevel(root)
     sub_window.title("Flashcard App - Aide!")
+    sub_window.config(bg=BACKGROUND_COLOR)
     #sub_window.geometry("600x600")
-    label = Label(sub_window, text="Comment fonctionne notre application?",font=("Courrier", 28))
+    label = Label(sub_window, text="Comment fonctionne notre application?",font=("Courrier", 28),bg=BACKGROUND_COLOR,fg="white")
     label.pack()
     # Create a frame to hold the three sections
     sections_frame = Frame(sub_window)
     sections_frame.pack(fill="both", expand=True, padx=10, pady=4)
+    sections_frame.config(bg=BACKGROUND_COLOR)
 
     section1_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section1_frame.pack(fill="both", expand=True, padx=10, pady=4)
-    section1_label = Label(section1_frame, text="Objectif",font=("Courrier", 18), anchor="w")
-    section1_label.pack(padx=10, pady=4)
-    section1_label1 = Label(section1_frame, text="Notre application a pour objectif de faciliter la mémorisetion de nouvelles informations en se basant sur un système de répétition espacée (SPACED REPETITION).")
-    section1_label1.pack(padx=10, pady=4)
     
+    section1_label = Label(section1_frame, text="Objectif",font=("Courrier", 18), anchor="w",bg=BACKGROUND_COLOR,fg="white")
+    section1_label.pack(padx=10, pady=4)
+    section1_label1 = Label(section1_frame, text="Notre application a pour objectif de faciliter la mémorisetion de nouvelles informations en se basant sur un système de répétition espacée (SPACED REPETITION).",bg=BACKGROUND_COLOR,fg="white")
+    section1_label1.pack(padx=10, pady=4)
+    section1_frame.config(bg=BACKGROUND_COLOR)
     # Create the second section with a label, combobox, and button
     section2_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section2_frame.pack(fill="both", expand=True, padx=10, pady=4)
     
-    section2_label = Label(section2_frame, text="Comment procéder?",font=("Courrier", 18))
+    section2_label = Label(section2_frame, text="Comment procéder?",font=("Courrier", 18),bg=BACKGROUND_COLOR,fg="white")
     section2_label.pack(padx=10, pady=4)
-    section2_label1 = Label(section2_frame, text="On vous propose une Flashcard pour apprendre l'Anglais, mais vous pouvez tous de même créer vos propres cartes personnalisés")
+    section2_label1 = Label(section2_frame, text="On vous propose une Flashcard pour apprendre l'Anglais, mais vous pouvez tous de même créer vos propres cartes personnalisés.",bg=BACKGROUND_COLOR,fg="white")
     section2_label1.pack(padx=10, pady=4)
+    section2_frame.config(bg=BACKGROUND_COLOR)
     
     
 
@@ -34,11 +41,11 @@ def aide(root):
     # Create the third section with a label, combobox, and button
     section3_frame = Frame(sections_frame, borderwidth=2, relief="groove")
     section3_frame.pack(fill="both", expand=True, padx=10, pady=4)
-    section3_label = Label(section3_frame, text="Evaluation",font=("Courrier", 18))
+    section3_label = Label(section3_frame, text="Evaluation",font=("Courrier", 18),bg=BACKGROUND_COLOR,fg="white")
     section3_label.pack(padx=10, pady=4)
-    section3_label1 = Label(section3_frame, text="Pour permettre à l'utilisateur de mesurer sa progréssion, on propose un système d'évaluation comme suit:")
+    section3_label1 = Label(section3_frame, text="Pour permettre à l'utilisateur de mesurer sa progression, on propose un système d'évaluation comme suit:",bg=BACKGROUND_COLOR,fg="white")
     section3_label1.pack(padx=10, pady=4)
-    text = Text(section3_frame, state="disabled", height=8, width=80)
+    text = Text(section3_frame, state="disabled", height=8, width=80,bg=BACKGROUND_COLOR,fg="white")
     text.pack()
     text.config(state="normal")
     # Insert text with bullets
@@ -51,7 +58,7 @@ def aide(root):
     # Set state back to "disabled" to prevent user editing
     text.config(state="disabled")
 
-    
+    section3_frame.config(bg=BACKGROUND_COLOR)
     
     
 
