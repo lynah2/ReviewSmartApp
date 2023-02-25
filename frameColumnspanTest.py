@@ -8,6 +8,7 @@ from Flashcard import Flashcard
 BACKGROUND_COLOR = "#050D54"
 
 image_ajout=None
+image_ajout_ref=None
 
 k=1
 m=k+2
@@ -76,7 +77,7 @@ def add_button():
 
 
 def reload_frames():
-    global image_ajout
+    global image_ajout,image_ajout_ref
     children = frame1.winfo_children()
     for i, widget in enumerate(children):
         if i > 1:  # skip the first two widgets
@@ -85,6 +86,12 @@ def reload_frames():
     button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
     button.config()
     button.grid(pady=0, padx=10, row=k+2, column=2)
+
+    image_ajout_ref=PhotoImage(file="images/ref5.png")
+    button_ref =Button(frame1,image=image_ajout_ref,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=reload_frames)
+    button_ref.config()
+    button_ref.grid(pady=0, padx=10, row=k+2, column=1)
+
     add_frames_from_csv(frame1)
     
 
@@ -166,6 +173,13 @@ button.config()
 button.grid(pady=0, padx=10, row=k+1, column=2)
 #output_button = Button(root, text="Return Output", command=return_output)
 #output_button.grid(row=2, column=0)
+
+image_ajout_ref=PhotoImage(file="images/ref5.png")
+#image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
+button_ref =Button(frame1,image=image_ajout_ref,width=50,bg='white',height=50, borderwidth=0, cursor='hand2', border='0', command=reload_frames)
+button_ref.config()
+button_ref.grid(pady=0, padx=10, row=k+1, column=1)
+
 
 
 
