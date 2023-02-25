@@ -1,9 +1,0 @@
-Meaning,Command,correct,repetition,lastRevised,nextTime,easiness,interval,repetitions_rev,responseQuality
-print,cat
-admin,sudo
-signal,kill
-initialization
-searsh,grep
-list,ls
-remove,rm
-move,mv
