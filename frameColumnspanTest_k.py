@@ -7,9 +7,6 @@ from Flashcard import Flashcard
 
 BACKGROUND_COLOR = "#050D54"
 
-image_ajout=None
-image_ajout_ref=None
-
 k=1
 m=k+2
 def create_new_window(root):
@@ -19,7 +16,6 @@ def create_new_window(root):
     return window
     
 def add_frames_from_csv(root):
-    
     
     with open("flashcards.csv") as f:
         reader = csv.reader(f)
@@ -66,18 +62,28 @@ def add_frames_from_csv(root):
                     i=0
                     k+=1
 
+def modify_card_and_reload(fCard):
+    fCard.modifier_carte()
+    reload_frames()
 
 def run_game_script():
     subprocess.call(["python", "hangman.py"])
 
 def add_button():
     subprocess.call(["python", "ajoutCategorie.py"])
+    children = frame1.winfo_children()
+    for i, widget in enumerate(children):
+        if i > 1:  # skip the first two widgets
+            widget.destroy()
+    
     add_frames_from_csv(frame1)
     reload_frames()
-
+    #image_ajout=PhotoImage(file="images/add.png")
+    # button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
+    # button.config()
+    # button.grid(pady=0, padx=10, row=k+2, column=2)
 
 def reload_frames():
-    global image_ajout,image_ajout_ref
     children = frame1.winfo_children()
     for i, widget in enumerate(children):
         if i > 1:  # skip the first two widgets
@@ -86,14 +92,6 @@ def reload_frames():
     button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
     button.config()
     button.grid(pady=0, padx=10, row=k+2, column=2)
-
-    image_ajout_ref=PhotoImage(file="images/rest4.png")
-    #image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
-    button_ref =Button(frame1,image=image_ajout_ref,width=40,bg="#050D54",height=40, borderwidth=0, cursor='hand2', border='0', command=reload_frames)
-    button_ref.config()
-    button_ref.grid(pady=30, padx=10, row=k+3, column=2)
-
-
     add_frames_from_csv(frame1)
     
 
@@ -172,17 +170,9 @@ image_ajout=PhotoImage(file="images/add.png")
 #image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
 button =Button(frame1,image=image_ajout,width=60,bg='white',height=60, borderwidth=0, cursor='hand2', border='0', command=add_button)
 button.config()
-button.grid(pady=0, padx=10, row=k+2, column=2)
+button.grid(pady=0, padx=10, row=k+1, column=2)
 #output_button = Button(root, text="Return Output", command=return_output)
 #output_button.grid(row=2, column=0)
-
-image_ajout_ref=PhotoImage(file="images/rest4.png")
-#image_ajout = image_ajout.subsample(2, 2)relief="raised", bd=0 
-button_ref =Button(frame1,image=image_ajout_ref,width=40,bg="#050D54",height=40, borderwidth=0, cursor='hand2', border='0', command=reload_frames)
-button_ref.config()
-button_ref.grid(pady=20, padx=10, row=k+3, column=2)
-
-
 
 
 
